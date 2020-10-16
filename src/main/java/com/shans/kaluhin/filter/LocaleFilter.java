@@ -1,8 +1,9 @@
 package com.shans.kaluhin.filter;
 
-import com.shans.kaluhin.entity.enums.Locales;
 import com.shans.kaluhin.entity.User;
+import com.shans.kaluhin.entity.enums.Locales;
 import com.shans.kaluhin.service.UserService;
+import org.apache.log4j.Logger;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
@@ -11,6 +12,9 @@ import java.io.IOException;
 
 @WebFilter(filterName = "LocaleFilter", urlPatterns = {"/*"})
 public class LocaleFilter implements Filter {
+    private static final Logger log = Logger.getLogger(LocaleFilter.class);
+
+
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
@@ -22,12 +26,16 @@ public class LocaleFilter implements Filter {
             if(Locales.contains(req.getParameter("lang"))) {
                 req.getSession().setAttribute("lang", req.getParameter("lang"));
                 if (user != null){
-                    UserService.setLocale(user, Locales.valueOf(locale));
+                    log.info("save user language");
+                    UserService userService = new UserService();
+                    userService.setLocale(user, Locales.valueOf(locale));
                 }
             }
         } else if (user != null) {
+            log.info("set user language");
             req.getSession().setAttribute("lang", user.getLocale());
         } else if (req.getSession().getAttribute("lang") == null) {
+            log.info("set default language");
             req.getSession().setAttribute("lang", Locales.En.name());
         }
         chain.doFilter(request, response);
@@ -36,7 +44,7 @@ public class LocaleFilter implements Filter {
     public void destroy() {
     }
 
-    public void init(FilterConfig arg0) throws ServletException {
+    public void init(FilterConfig arg0) {
     }
 }
 

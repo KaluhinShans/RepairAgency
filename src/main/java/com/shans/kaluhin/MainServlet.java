@@ -2,6 +2,7 @@ package com.shans.kaluhin;
 
 import com.shans.kaluhin.entity.User;
 import com.shans.kaluhin.service.UserService;
+import org.apache.log4j.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -11,6 +12,7 @@ import java.io.IOException;
 
 @WebServlet(name = "Main")
 public class MainServlet extends HttpServlet {
+    private static final Logger log = Logger.getLogger(UserService.class);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -18,8 +20,10 @@ public class MainServlet extends HttpServlet {
             int id = isUserRemembered(req);
             if (id != -1) {
                 HttpSession session = req.getSession();
-                User user = getRememberedUser(id);
+                UserService userService = new UserService();
+                User user = userService.getUserByID(id);
                 session.setAttribute("user", user);
+                log.info("User logged by remember me");
             }
         }
         RequestDispatcher view = req.getRequestDispatcher("/WEB-INF/jsp/index.jsp");
@@ -36,9 +40,5 @@ public class MainServlet extends HttpServlet {
             }
         }
         return -1;
-    }
-
-    private User getRememberedUser(int id) {
-        return UserService.getUserByID(id);
     }
 }

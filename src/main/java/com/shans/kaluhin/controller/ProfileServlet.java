@@ -1,7 +1,8 @@
 package com.shans.kaluhin.controller;
 
-import com.shans.kaluhin.ProjectProperties;
+import com.shans.kaluhin.entity.Billing;
 import com.shans.kaluhin.entity.User;
+import com.shans.kaluhin.service.BillingService;
 import com.shans.kaluhin.service.UserService;
 
 import javax.servlet.RequestDispatcher;
@@ -12,25 +13,27 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 
 @WebServlet(name = "Profile")
 @MultipartConfig
 public class ProfileServlet extends HttpServlet {
+    private int totalTransactions = 5;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        User user = (User) req.getSession(false).getAttribute("user");
+
         String uri = req.getRequestURI();
-      if(uri.equals("/profile/edit")){
-          RequestDispatcher view = req.getRequestDispatcher("/WEB-INF/jsp/profileEdit.jsp");
-          view.forward(req, resp);
-          return;
-      }
-        RequestDispatcher view = req.getRequestDispatcher("/WEB-INF/jsp/profile.jsp");
+        if (uri.equals("/profile/edit")) {
+            RequestDispatcher view = req.getRequestDispatcher("/WEB-INF/jsp/authorization/profileEdit.jsp");
+            view.forward(req, resp);
+            return;
+        }
+        pagination(req, user.getId());
+        RequestDispatcher view = req.getRequestDispatcher("/WEB-INF/jsp/authorization/profile.jsp");
         view.forward(req, resp);
     }
 
@@ -38,29 +41,38 @@ public class ProfileServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Part filePart = req.getPart("photo");
         User user = (User) req.getSession(false).getAttribute("user");
-        if (filePart != null) {
-            savePhoto(user, filePart);
+
+        if (filePart.getSize() > 0) {
+            UserService userService = new UserService();
+            userService.savePhoto(user, filePart);
         }
-        RequestDispatcher view = req.getRequestDispatcher("/WEB-INF/jsp/profile.jsp");
-        view.forward(req, resp);
+
+        resp.sendRedirect(req.getContextPath() + "/profile");
     }
 
-    private void savePhoto(User user, Part filePart) {
-        String name = user.getEmail() + ".jpg";
-        File file = new File(ProjectProperties.getProperty("images") + name);
+    private void pagination(HttpServletRequest req, int userId) {
+        String spage = req.getParameter("page");
+        int page = 1;
 
-        try (BufferedInputStream bis = new BufferedInputStream(filePart.getInputStream());
-             FileOutputStream fos = new FileOutputStream(file)) {
-
-            int ch;
-            while ((ch = bis.read()) != -1) {
-                fos.write(ch);
-            }
-
-            UserService.savePhoto(user, name);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (spage != null) {
+            page = Integer.parseInt(spage);
         }
+
+        int startPosition = page * totalTransactions - totalTransactions;
+
+        BillingService billingService = new BillingService();
+
+        List<Billing> transactions = billingService.getUserBillings(userId, startPosition, totalTransactions);
+
+        int nOfPages = billingService.getNumberOfRows() / totalTransactions;
+
+        if (nOfPages % totalTransactions > 0) {
+            nOfPages++;
+        }
+
+        req.setAttribute("transactions", transactions);
+        req.setAttribute("page", page);
+        req.setAttribute("nOfPages", nOfPages);
     }
 
 }

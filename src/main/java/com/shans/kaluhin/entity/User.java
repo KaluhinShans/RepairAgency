@@ -36,6 +36,10 @@ public class User {
         return roles.contains(Role.MASTER);
     }
 
+    public boolean isAdmin() {
+        return roles.contains(Role.ADMIN);
+    }
+
     public String getFullName() {
         return name + " " + lastName;
     }
@@ -145,4 +149,6 @@ public class User {
                 ", locale=" + locale +
                 '}';
     }
+
+
 }

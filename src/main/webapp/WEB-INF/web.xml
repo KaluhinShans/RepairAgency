@@ -11,11 +11,11 @@
     </servlet>
     <servlet>
         <servlet-name>Login</servlet-name>
-        <servlet-class>com.shans.kaluhin.controller.LoginServlet</servlet-class>
+        <servlet-class>com.shans.kaluhin.controller.authorization.LoginServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>Logout</servlet-name>
-        <servlet-class>com.shans.kaluhin.controller.LogoutServlet</servlet-class>
+        <servlet-class>com.shans.kaluhin.controller.authorization.LogoutServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>Profile</servlet-name>
@@ -23,17 +23,36 @@
     </servlet>
     <servlet>
         <servlet-name>Register</servlet-name>
-        <servlet-class>com.shans.kaluhin.controller.RegisterServlet</servlet-class>
+        <servlet-class>com.shans.kaluhin.controller.authorization.RegisterServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ManagerServlet</servlet-name>
         <servlet-class>com.shans.kaluhin.controller.ManagerServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>Activate</servlet-name>
-        <servlet-class>com.shans.kaluhin.controller.ActivationEmailServlet</servlet-class>
+        <servlet-name>AdminServlet</servlet-name>
+        <servlet-class>com.shans.kaluhin.controller.AdminServlet</servlet-class>
     </servlet>
-
+    <servlet>
+        <servlet-name>Activate</servlet-name>
+        <servlet-class>com.shans.kaluhin.controller.authorization.ActivationEmailServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>OrdersServlet</servlet-name>
+        <servlet-class>com.shans.kaluhin.controller.orders.OrdersServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddOrderServlet</servlet-name>
+        <servlet-class>com.shans.kaluhin.controller.orders.AddOrderServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>MasterServlet</servlet-name>
+        <servlet-class>com.shans.kaluhin.controller.MasterServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>PaymentServlet</servlet-name>
+        <servlet-class>com.shans.kaluhin.controller.orders.PaymentServlet</servlet-class>
+    </servlet>
     <servlet>
         <servlet-name>default</servlet-name>
     </servlet>
@@ -60,11 +79,31 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ManagerServlet</servlet-name>
-        <url-pattern>/usersList</url-pattern>
+        <url-pattern>/ordersList</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminServlet</servlet-name>
+        <url-pattern>/usersList/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Activate</servlet-name>
         <url-pattern>/activate/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>OrdersServlet</servlet-name>
+        <url-pattern>/orders/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddOrderServlet</servlet-name>
+        <url-pattern>/orders/add</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MasterServlet</servlet-name>
+        <url-pattern>/master/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PaymentServlet</servlet-name>
+        <url-pattern>/payment/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>default</servlet-name>

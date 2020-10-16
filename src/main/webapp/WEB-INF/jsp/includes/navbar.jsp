@@ -9,7 +9,7 @@
 <fmt:setBundle basename="resources"/>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="/"><fmt:message key="logo" /></a>
+    <a class="navbar-brand" href="/"><fmt:message key="logo"/></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -17,19 +17,24 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="/"><fmt:message key="home" /></a>
-            </li>
             <c:if test="${user != null}">
-                <c:if test="${user.isManager()}">
                 <li class="nav-item">
-                    <a class="nav-link" href="/usersList"><fmt:message key="users" /></a>
+                    <a class="nav-link" href="/orders"><fmt:message key="orders"/></a>
                 </li>
+                <c:if test="${user.isManager()}">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/ordersList"><fmt:message key="manager"/></a>
+                    </li>
                 </c:if>
                 <c:if test="${user.isMaster()}">
-                <li class="nav-item">
-                    <a class="nav-link" href="/work">Work</a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/master">Master</a>
+                    </li>
+                </c:if>
+                <c:if test="${user.isAdmin()}">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/usersList"><fmt:message key="users"/></a>
+                    </li>
                 </c:if>
             </c:if>
         </ul>
@@ -46,10 +51,15 @@
         </div>
         <c:choose>
             <c:when test="${user != null}">
-                <a class="nav-link disabled" href="/replenish"><fmt:message key="balance" />: </a>
-                <span class="navbar-text">
-                    <c:out value="${user.balance}"/>
-                  </span>
+                <div class="dropdown">
+                    <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <fmt:message key="balance"/>: <c:out value="${user.balance}"/>
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a type="button" class="dropdown-item" data-toggle="modal" data-target="#replenish">Replenish</a>
+                        <a class="dropdown-item" data-toggle="modal" data-target="#withdraw">Withdraw</a>
+                    </div>
+                </div>
 
                 <form class="form-inline my-4 my-lg-0 ml-4" action="/profile" method="get">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><c:out value="${user.name}"/>
@@ -58,13 +68,15 @@
             </c:when>
             <c:otherwise>
                 <form class="form-inline my-2 my-lg-0 ml-4" action="/login" method="get">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><fmt:message key="login" /></button>
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><fmt:message
+                            key="login"/></button>
                 </form>
             </c:otherwise>
         </c:choose>
     </div>
 </nav>
 
+<jsp:include page="./payment.jsp"/>
 <script>
     $(document).ready(function () {
         $('#demoList').on('click', function () {

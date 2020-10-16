@@ -7,16 +7,51 @@
 
 <fmt:setLocale value="${sessionScope.lang}"/>
 <fmt:setBundle basename="resources"/>
-<html lang="${sessionScope.lang}">
+
+<html>
 <head>
     <title><fmt:message key="home"/></title>
     <jsp:include page="./includes/headers.jsp"/>
 </head>
 <body>
 <jsp:include page="./includes/navbar.jsp"/>
-<div class="container mt-5">
-    <h5>Hello, guest</h5>
-    <div>This is a simple site</div>
-</div>
+
+<main role="main">
+
+    <div class="jumbotron">
+        <div class="container">
+            <h1 class="display-3">Hello, Epam!</h1>
+            <p>This is a simple site for my final project in Epam.</p>
+            <p><a class="btn btn-primary btn-lg" href="/orders" role="button">Lets go &raquo;</a></p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h2>Telegram Bot</h2>
+                <p>My telegram bot for introduce me. You can leave me message, download CV, and other. I have implemented a GitHub parser, so you can test it. </p>
+                <p><a class="btn btn-secondary" href="https://t.me/Introduceme_bot" role="button">Chat  &raquo;</a></p>
+            </div>
+            <div class="col-md-4">
+                <h2>Linked In</h2>
+                <p>I'ts just my Linked In profile. Add me to contacts &#128522;</p>
+                <p><a class="btn btn-secondary" href="https://www.linkedin.com/in/kaluhinshans/" role="button">Profile  &raquo;</a></p>
+            </div>
+            <div class="col-md-4">
+                <h2>Git Hub</h2>
+                <p>I'ts just my github profile. </p>
+                <p><a class="btn btn-secondary" href="https://github.com/MadgelS" role="button">Link  &raquo;</a></p>
+            </div>
+        </div>
+
+        <hr>
+
+    </div>
+</main>
+
+<footer class="container">
+    <p>&copy; Kaluhin Shans 2020</p>
+</footer>
 </body>
 </html>
