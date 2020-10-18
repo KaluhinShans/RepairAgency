@@ -42,7 +42,7 @@ public class MailSenderService {
                 ProjectProperties.getProperty("host") + "/orders", user.getFullName(), order.getPrice(), order.getId(), order.getName());
 
         MailSenderService.send(user.getEmail(), "New Order status", message);
-        log.info("Status update send to user");
+        log.info("Order payment information send");
     }
 
     public static void sendTopUpBalance(User user, int sum){
@@ -54,7 +54,7 @@ public class MailSenderService {
                 ProjectProperties.getProperty("host") + "/profile", user.getFullName(), sum, user.getBalance());
 
         MailSenderService.send(user.getEmail(), "New Order status", message);
-        log.info("Status update send to user");
+        log.info("Balance replenish information send to user");
     }
 
     public static void sendWithdrawBalance(User user, int sum, String card){
@@ -66,7 +66,7 @@ public class MailSenderService {
                 ProjectProperties.getProperty("host") + "/profile", user.getFullName(), sum, card, user.getBalance());
 
         MailSenderService.send(user.getEmail(), "New Order status", message);
-        log.info("Status update send to user");
+        log.info("Cash out the balance information send to user");
     }
 
    public static void send(String toEmail, String subject, String text){

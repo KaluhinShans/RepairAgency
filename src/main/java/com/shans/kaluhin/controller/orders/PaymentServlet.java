@@ -42,7 +42,6 @@ public class PaymentServlet extends HttpServlet {
             billingService.topUpBalance(user, sum, card);
         }
 
-
         resp.sendRedirect(req.getRequestURI());
     }
 

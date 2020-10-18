@@ -80,10 +80,12 @@ public class UserService {
 
     public void giveRole(int userId, Role role) {
         userDao.giveRole(userId, role);
+        log.info("User " + userId + "get role: " + role.name());
     }
 
     public void pickUpRole(int userId, Role role) {
         userDao.pickUpRole(userId, role);
+        log.info("User " + userId + "lost role: " + role.name());
     }
 
     public User getUserByEmail(String email) {
@@ -124,8 +126,10 @@ public class UserService {
 
             user.setPhoto(name);
             userDao.savePhoto(user);
+            log.info("User photo saved");
         } catch (IOException e) {
             e.printStackTrace();
+            log.error("Can't save photo");
         }
     }
 

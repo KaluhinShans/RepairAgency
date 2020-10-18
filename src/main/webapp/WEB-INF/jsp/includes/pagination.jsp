@@ -10,7 +10,7 @@
     <ul class="pagination">
         <c:if test="${page != 1}">
             <li class="page-item">
-                <a class="page-link" onclick="addUrlParameter('${page-1}')">Previous</a>
+                <a class="page-link" onclick="addUrlParameter('${page-1}')"><fmt:message key="previous"/></a>
             </li>
         </c:if>
 
@@ -31,7 +31,7 @@
 
         <c:if test="${page lt nOfPages}">
             <li class="page-item"><a class="page-link"
-                                     onclick="addUrlParameter('${page+1}')">Next</a>
+                                     onclick="addUrlParameter('${page+1}')"><fmt:message key="next"/></a>
             </li>
         </c:if>
     </ul>

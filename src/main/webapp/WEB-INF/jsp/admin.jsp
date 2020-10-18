@@ -24,14 +24,14 @@
         <div class="form-group col-md-6">
             <form method="get" action="/usersList" class="form-inline">
                 <input type="email" name="searchByEmail" class="form-control"
-                       placeholder="Search by email">
-                <button type="submit" class="btn btn-primary ml-2">Search</button>
+                       placeholder="<fmt:message key="search.byEmail"/>">
+                <button type="submit" class="btn btn-primary ml-2"><fmt:message key="search"/></button>
             </form>
         </div>
     </div>
 
     <c:if test="${users.size() <= 1}">
-        <a class="btn btn-light" href="/usersList" role="button">&laquo; Back</a>
+        <a class="btn btn-light" href="/usersList" role="button">&laquo; <fmt:message key="back"/></a>
         <br>
         <br>
     </c:if>
@@ -45,34 +45,35 @@
                             <div class="media-body">
                                 <h5 class="mt-0">${user.fullName}
                                     <a type="button" class="btn btn-outline-success btn-sm float-right"
-                                       data-toggle="modal" data-target="#replenishUser${user.id}">Replenish balance</a>
+                                       data-toggle="modal" data-target="#replenishUser${user.id}"><fmt:message key="balance.replenish"/> <fmt:message key="balance"/></a>
                                 </h5>
-                                Email: ${user.email} <br>
-                                Roles: ${user.roles}
+                                <fmt:message key="email"/>: ${user.email} <br>
+                                <fmt:message key="roles"/>: ${user.roles}
                                 <div class="float-right">
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="checkbox" id="inlineCheckbox2"
                                                onclick="changeRole(${user.id}, ${user.isManager()}, 'MANAGER')"
                                                <c:if test="${user.isManager()}">checked</c:if>>
-                                        <label class="form-check-label" for="inlineCheckbox2">Manager</label>
+                                        <label class="form-check-label" for="inlineCheckbox2"><fmt:message key="manager"/></label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="checkbox" id="inlineCheckbox3"
                                                onclick="changeRole(${user.id}, ${user.isMaster()}, 'MASTER')"
                                                <c:if test="${user.isMaster()}">checked</c:if>>
-                                        <label class="form-check-label" for="inlineCheckbox3">Master</label>
+                                        <label class="form-check-label" for="inlineCheckbox3"><fmt:message key="master"/></label>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </li>
 
+                    <!-- MODAL -->
                     <div class="modal fade bd-example-modal-sm" id="replenishUser${user.id}" tabindex="-1" role="dialog"
                          aria-labelledby="exampleModalCenterTitle">
                         <div class="modal-dialog modal-sm" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title">Payment information:</h5>
+                                    <h5 class="modal-title"><fmt:message key="balance.paymentInfo"/>:</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -86,7 +87,7 @@
                                         </div>
                                         <hr>
                                         <div class="modal-footer justify-content-center">
-                                            <button type="submit" class="btn btn-primary">Replenish</button>
+                                            <button type="submit" class="btn btn-primary"><fmt:message key="balance.replenish"/></button>
                                         </div>
                                     </form>
                                 </div>
@@ -97,7 +98,7 @@
             </c:when>
             <c:otherwise>
                 <div class="alert alert-info" role="alert">
-                    No one user
+                    <fmt:message key="search.noOneUser"/>
                 </div>
             </c:otherwise>
         </c:choose>
@@ -105,8 +106,6 @@
     </ul>
     <br>
 </div>
-
-<!-- MODAL -->
 
 </body>
 </html>

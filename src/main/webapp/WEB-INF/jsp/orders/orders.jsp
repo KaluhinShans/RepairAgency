@@ -19,7 +19,7 @@
     <div class="form-row">
         <div class="form-group col-md-6">
             <form method="get" action="/orders/add" class="form-inline">
-                <button class="btn btn-primary ml-2"><fmt:message key="addOrder"/></button>
+                <button class="btn btn-primary ml-2"><fmt:message key="orders.addOrder"/></button>
             </form>
         </div>
     </div>
@@ -42,42 +42,42 @@
                 <c:forEach var="order" items="${orders}">
                     <div class="card my-3">
                         <div class="card-body">
-                            <h5 class="card-title">Problem: ${order.name}
+                            <h5 class="card-title"><fmt:message key="orders.problem"/>: ${order.name}
                                 <c:if test="${!order.isReject() && !order.isDone()}">
                                     <a href="/orders/reject?orderId=${order.id}"
-                                       class="btn btn-outline-danger btn-sm float-right">Reject</a>
+                                       class="btn btn-outline-danger btn-sm float-right"><fmt:message key="orders.reject"/></a>
                                 </c:if>
                             </h5>
-                            <h6 class="card-subtitle mb-2">Status: ${order.status}</h6>
+                            <h6 class="card-subtitle mb-2"><fmt:message key="orders.status"/>: ${order.status}</h6>
                             <br>
-                            <h6 class="card-subtitle mb-2">Description: ${order.description}</h6>
+                            <h6 class="card-subtitle mb-2"><fmt:message key="orders.description"/>: ${order.description}</h6>
                             <br>
                             <c:if test="${order.masterId > 0}">
                                 <c:set var="orderMaster" value="${order.master}"/>
                                 <br>
-                                <h6 class="card-subtitle mb-2">Master: </h6>
+                                <h6 class="card-subtitle mb-2"><fmt:message key="master"/>: </h6>
                                 <div class="media">
                                     <img src="/images/users/${orderMaster.photo}" class="align-self-start mr-3"
                                          width="42"
                                          height="42">
                                     <div class="media-body">
                                         <h5 class="mt-0">${orderMaster.fullName}</h5>
-                                        Email: ${orderMaster.email}
+                                        <fmt:message key="email"/>: ${orderMaster.email}
                                     </div>
                                 </div>
                                 <br>
                             </c:if>
-                            <h6 class="card-subtitle mb-2 text-muted">Location: ${order.location}</h6>
-                            <h6 class="card-subtitle mb-2 text-muted">Date: ${order.date}</h6>
+                            <h6 class="card-subtitle mb-2 text-muted"><fmt:message key="orders.location"/>: ${order.location}</h6>
+                            <h6 class="card-subtitle mb-2 text-muted"><fmt:message key="orders.location"/>: ${order.date}</h6>
                             <div class="dropdown-divider"></div>
                             <c:if test="${order.price > 0}">
                                 <br>
-                                <h6 class="card-subtitle mb-2">Price: ${order.price}</h6>
+                                <h6 class="card-subtitle mb-2"><fmt:message key="orders.price"/>: ${order.price}</h6>
                             </c:if>
                             <c:if test="${order.isPayment()}">
                                 <form action="/payment" method="get">
                                     <input type="hidden" name="orderId" value="${order.id}">
-                                    <button type="submit" class="btn btn-primary">Pay</button>
+                                    <button type="submit" class="btn btn-primary"><fmt:message key="orders.pay"/></button>
                                 </form>
                             </c:if>
                         </div>
@@ -87,7 +87,7 @@
         </c:when>
         <c:otherwise>
             <div class="alert alert-info" role="alert">
-                You have no orders
+                <fmt:message key="orders.noOrders"/>
             </div>
         </c:otherwise>
     </c:choose>

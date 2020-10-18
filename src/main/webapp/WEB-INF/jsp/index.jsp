@@ -10,7 +10,7 @@
 
 <html>
 <head>
-    <title><fmt:message key="home"/></title>
+    <title><fmt:message key="logo"/></title>
     <jsp:include page="./includes/headers.jsp"/>
 </head>
 <body>
@@ -20,28 +20,28 @@
 
     <div class="jumbotron">
         <div class="container">
-            <h1 class="display-3">Hello, Epam!</h1>
-            <p>This is a simple site for my final project in Epam.</p>
-            <p><a class="btn btn-primary btn-lg" href="/orders" role="button">Lets go &raquo;</a></p>
+            <h1 class="display-3"><fmt:message key="index.helloEpam"/></h1>
+            <p><fmt:message key="index.thisIsSimple"/></p>
+            <p><a class="btn btn-primary btn-lg" href="/orders" role="button"><fmt:message key="index.letsGo"/> &raquo;</a></p>
         </div>
     </div>
 
     <div class="container">
         <div class="row">
             <div class="col-md-4">
-                <h2>Telegram Bot</h2>
-                <p>My telegram bot for introduce me. You can leave me message, download CV, and other. I have implemented a GitHub parser, so you can test it. </p>
-                <p><a class="btn btn-secondary" href="https://t.me/Introduceme_bot" role="button">Chat  &raquo;</a></p>
+                <h2><fmt:message key="index.TelegramBot"/></h2>
+                <p><fmt:message key="index.TelegramBot.description"/> </p>
+                <p><a class="btn btn-secondary" href="https://t.me/Introduceme_bot" role="button"><fmt:message key="index.chat"/>  &raquo;</a></p>
             </div>
             <div class="col-md-4">
                 <h2>Linked In</h2>
-                <p>I'ts just my Linked In profile. Add me to contacts &#128522;</p>
-                <p><a class="btn btn-secondary" href="https://www.linkedin.com/in/kaluhinshans/" role="button">Profile  &raquo;</a></p>
+                <p><fmt:message key="index.LinkedIn.description"/> &#128522;</p>
+                <p><a class="btn btn-secondary" href="https://www.linkedin.com/in/kaluhinshans/" role="button"><fmt:message key="profile"/>  &raquo;</a></p>
             </div>
             <div class="col-md-4">
                 <h2>Git Hub</h2>
-                <p>I'ts just my github profile. </p>
-                <p><a class="btn btn-secondary" href="https://github.com/MadgelS" role="button">Link  &raquo;</a></p>
+                <p<fmt:message key="index.GitHub.description"/> </p>
+                <p><a class="btn btn-secondary" href="https://github.com/MadgelS" role="button"><fmt:message key="index.link"/>  &raquo;</a></p>
             </div>
         </div>
 

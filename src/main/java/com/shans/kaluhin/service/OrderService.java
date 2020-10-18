@@ -10,14 +10,15 @@ import java.util.List;
 
 
 public class OrderService {
-    private final Logger log = Logger.getLogger(UserService.class);
+    private final Logger log = Logger.getLogger(OrderService.class);
     private OrderDao orderDao = new OrderDao();
 
     public void saveOrder(Order order) {
         orderDao.insert(order);
+        log.info("User add new order");
     }
 
-    public Order getByID(int id){
+    public Order getByID(int id) {
         return orderDao.findById(id);
     }
 
@@ -25,14 +26,16 @@ public class OrderService {
         orderDao.setVariable("price", orderId, price);
         orderDao.setVariable("master_id", orderId, managerId);
         setOrderStatus(orderId, OrderStatus.PAYMENT);
+        log.info("Manager check order");
     }
 
-    public void setOrderStatus(int orderId, OrderStatus status){
+    public void setOrderStatus(int orderId, OrderStatus status) {
         orderDao.setVariable("status", orderId, status.name());
 
         Order order = orderDao.findById(orderId);
         User user = order.getUser();
         MailSenderService.sendOrderStatusUpdate(user, order);
+        log.info("Order " + orderId + "get status: " + status.name());
     }
 
     public int getNumberOfRows() {
@@ -68,5 +71,6 @@ public class OrderService {
         Order order = orderDao.findById(orderId);
         int sum = (int) (order.getPrice() * 0.8);
         billingService.topUpBalance(master, sum, "Repair Agency");
+        log.info("Order is done, and master get salary");
     }
 }

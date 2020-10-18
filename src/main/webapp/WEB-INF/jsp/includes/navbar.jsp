@@ -28,7 +28,7 @@
                 </c:if>
                 <c:if test="${user.isMaster()}">
                     <li class="nav-item">
-                        <a class="nav-link" href="/master">Master</a>
+                        <a class="nav-link" href="/master"><fmt:message key="master"/></a>
                     </li>
                 </c:if>
                 <c:if test="${user.isAdmin()}">
@@ -56,8 +56,8 @@
                         <fmt:message key="balance"/>: <c:out value="${user.balance}"/>
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a type="button" class="dropdown-item" data-toggle="modal" data-target="#replenish">Replenish</a>
-                        <a class="dropdown-item" data-toggle="modal" data-target="#withdraw">Withdraw</a>
+                        <a type="button" class="dropdown-item" data-toggle="modal" data-target="#replenish"><fmt:message key="balance.replenish"/></a>
+                        <a class="dropdown-item" data-toggle="modal" data-target="#withdraw"><fmt:message key="balance.withdraw"/></a>
                     </div>
                 </div>
 

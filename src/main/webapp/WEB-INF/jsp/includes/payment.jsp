@@ -1,5 +1,8 @@
 <link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"/>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
+<fmt:setLocale value="${sessionScope.lang}"/>
+<fmt:setBundle basename="resources"/>
 
 <!-- Modal -->
 <div class="modal fade bd-example-modal-sm" id="replenish" tabindex="-1" role="dialog"
@@ -7,7 +10,7 @@
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Payment information:</h5>
+                <h5 class="modal-title"><fmt:message key="balance.paymentInfo"/>:</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -15,12 +18,12 @@
             <div class="modal-body">
                 <form action="/payment" method="post">
                     <div class="input-wrapper">
-                        <input class="form-control input-with-icon" type="number" placeholder="Sum" name="sum">
+                        <input class="form-control input-with-icon" type="number" placeholder="<fmt:message key="balance.sum"/>" name="sum">
                         <label for="card" class="fa fa-dollar input-icon"></label>
                     </div>
                     <hr>
                     <div class="input-wrapper">
-                        <input class="form-control input-with-icon" placeholder="Card number" name="card" id="card">
+                        <input class="form-control input-with-icon" placeholder="<fmt:message key="balance.card"/>" name="card" id="card">
                         <label for="card" class="fa fa-credit-card input-icon"></label>
                     </div>
                     <br>
@@ -40,7 +43,7 @@
                     </div>
                     <hr>
                     <div class="modal-footer justify-content-center">
-                        <button type="submit" class="btn btn-primary">Pay</button>
+                        <button type="submit" class="btn btn-primary"><fmt:message key="orders.pay"/></button>
                     </div>
                 </form>
             </div>
@@ -54,7 +57,7 @@
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Payment information:</h5>
+                <h5 class="modal-title"><fmt:message key="balance.paymentInfo"/>:</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -62,17 +65,17 @@
             <div class="modal-body">
                 <form action="/payment/withdraw" method="post">
                     <div class="input-wrapper">
-                        <input class="form-control input-with-icon" type="number" placeholder="Sum" name="sum" id="sum">
+                        <input class="form-control input-with-icon" type="number" placeholder="<fmt:message key="balance.sum"/>" name="sum" id="sum">
                         <label for="sum" class="fa fa-dollar input-icon"></label>
                     </div>
                     <hr>
                     <div class="input-wrapper">
-                        <input class="form-control input-with-icon" placeholder="Card number" name="card" id="cardW">
+                        <input class="form-control input-with-icon" placeholder="<fmt:message key="balance.card"/>" name="card" id="cardW">
                         <label for="card" class="fa fa-credit-card input-icon"></label>
                     </div>
                     <hr>
                     <div class="modal-footer justify-content-center">
-                        <button type="submit" class="btn btn-primary">Withdraw</button>
+                        <button type="submit" class="btn btn-primary"><fmt:message key="balance.withdraw"/></button>
                     </div>
                 </form>
             </div>

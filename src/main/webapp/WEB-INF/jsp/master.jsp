@@ -8,7 +8,7 @@
 
 <html>
 <head>
-    <title><fmt:message key="manager"/></title>
+    <title><fmt:message key="master"/></title>
     <jsp:include page="./includes/headers.jsp"/>
 </head>
 <body>
@@ -19,23 +19,23 @@
         <div class="form-group col-md-6">
             <form method="get" action="/master" class="form-inline">
                 <select required name="searchByStatus" class="form-control ml-2">
-                    <option>ALL</option>
+                    <option value="ALL"><fmt:message key="ALL"/></option>
                     <c:choose>
                         <c:when test="${param['searchByStatus'] != null}">
-                            <option selected hidden>${param["searchByStatus"]}</option>
-                            <option>PENDING</option>
+                            <option selected hidden value="${param['searchByStatus']}"><fmt:message key="${param['searchByStatus']}"/></option>
+                            <option value="PENDING"><fmt:message key="PENDING"/></option>
                         </c:when>
                         <c:otherwise>
-                            <option selected>PENDING</option>
+                            <option selected value="PENDING"><fmt:message key="PENDING"/></option>
                         </c:otherwise>
                     </c:choose>
-                    <option>PROCESS</option>
-                    <option>DONE</option>
-                    <option>PAYMENT</option>
-                    <option>REJECT</option>
+                    <option value="PROCESS"><fmt:message key="PROCESS"/></option>
+                    <option value="DONE"><fmt:message key="DONE"/></option>
+                    <option value="PAYMENT"><fmt:message key="PAYMENT"/></option>
+                    <option value="REJECT"><fmt:message key="REJECT"/></option>
                 </select>
 
-                <button type="submit" class="btn btn-primary ml-2">Search</button>
+                <button type="submit" class="btn btn-primary ml-2"><fmt:message key="search"/></button>
             </form>
         </div>
     </div>
@@ -47,45 +47,45 @@
         <c:forEach var="order" items="${orders}">
             <div class="card my-3">
                 <div class="card-body ">
-                    <h5 class="card-title">Problem: ${order.name}
+                    <h5 class="card-title"><fmt:message key="orders.problem"/>: ${order.name}
                         <c:if test="${!order.isReject() && !order.isDone()}">
                         <a href="/orders/reject?orderId=${order.id}"
-                           class="btn btn-outline-danger btn-sm float-right">Reject</a>
+                           class="btn btn-outline-danger btn-sm float-right"><fmt:message key="orders.reject"/></a>
                         </c:if>
-                        <h6 class="card-subtitle mb-2">Status: ${order.status}</h6>
+                        <h6 class="card-subtitle mb-2"><fmt:message key="orders.status"/>: ${order.status}</h6>
                         <br>
-                        <h6 class="card-subtitle mb-2">Description: ${order.description}</h6>
+                        <h6 class="card-subtitle mb-2"><fmt:message key="orders.description"/>: ${order.description}</h6>
                         <br>
                         <c:if test="${order.userId > 0}">
                             <c:set var="orderUser" value="${order.user}"/>
                         <br>
-                        <h6 class="card-subtitle mb-2">User: </h6>
+                        <h6 class="card-subtitle mb-2"><fmt:message key="orders.user"/>: </h6>
                         <div class="media">
                             <img src="/images/users/${orderUser.photo}" class="align-self-start mr-3" width="42"
                                  height="42">
                             <div class="media-body">
                                 <h5 class="mt-0">${orderUser.fullName}</h5>
-                                Email: ${orderUser.email}
+                                <fmt:message key="email"/>: ${orderUser.email}
                             </div>
                         </div>
                         <br>
                         </c:if>
-                        <h6 class="card-subtitle mb-2 text-muted">Location: ${order.location}</h6>
-                        <h6 class="card-subtitle mb-2 text-muted">Date: ${order.date}</h6>
+                        <h6 class="card-subtitle mb-2 text-muted"><fmt:message key="orders.location"/>: ${order.location}</h6>
+                        <h6 class="card-subtitle mb-2 text-muted"><fmt:message key="orders.date"/>: ${order.date}</h6>
                         <div class="dropdown-divider"></div>
                         <c:if test="${order.price > 0}">
                         <br>
-                        <h6 class="card-subtitle mb-2">Price: ${order.price}</h6>
+                        <h6 class="card-subtitle mb-2"><fmt:message key="orders.price"/>: ${order.price}</h6>
                         </c:if>
                         <c:if test="${order.isPending()}">
                         <form method="post" action="/master">
                             <input type="hidden" name="orderId" value="${order.id}">
-                            <button type="submit" class="btn btn-primary">Start work</button>
+                            <button type="submit" class="btn btn-primary"><fmt:message key="orders.start"/></button>
                         </form>
                         </c:if>
                         <c:if test="${order.isProcess()}">
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#askMaster">
-                            Finish
+                            <fmt:message key="orders.finish"/>
                         </button>
 
                         <!-- Modal -->
@@ -94,20 +94,20 @@
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Are you sure?</h5>
+                                        <h5 class="modal-title" id="exampleModalLabel"><fmt:message key="orders.areYouSure"/></h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        Are you sure want to finish this order?
+                                        <fmt:message key="orders.areYouSure.description"/>
                                         <hr>
                                         <form method="post" action="/master/finish">
                                             <input type="hidden" name="orderId" value="${order.id}">
                                             <button type="button" class="btn btn-secondary float-left"
-                                                    data-dismiss="modal">Close
+                                                    data-dismiss="modal"><fmt:message key="orders.close"/>
                                             </button>
-                                            <button type="submit" class="btn btn-primary float-right">Finish</button>
+                                            <button type="submit" class="btn btn-primary float-right"><fmt:message key="orders.finish"/></button>
                                         </form>
                                     </div>
                                 </div>
@@ -122,7 +122,7 @@
     </c:when>
     <c:otherwise>
     <div class="alert alert-info" role="alert">
-        You have no orders
+        <fmt:message key="orders.users.noOrders"/>
     </div>
     </c:otherwise>
     </c:choose>

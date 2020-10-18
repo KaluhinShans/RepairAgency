@@ -52,6 +52,9 @@
                     <div class="profile-head">
                         <h5>
                             <%=user.getFullName()%>
+                            <%if (user.getActivationCode() == null) { %>
+                            <label class="fa fa-check-circle-o"></label>
+                            <%}%>
                         </h5>
                         <h6>
                             Customer
@@ -91,9 +94,6 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label><fmt:message key="email"/>
-                                            <%if (user.getActivationCode() == null) { %>
-                                            <label class="fa fa-check-circle-o"></label>
-                                            <%}%>
                                         </label>
                                     </div>
                                     <div class="col-md-6">
@@ -116,17 +116,17 @@
             <hr>
             <div class="list-group">
                 <button type="button" class="list-group-item list-group-item-action active">
-                    Transactions
+                    <fmt:message key="balance.transactions"/>
                 </button>
                 <c:forEach var="transaction" items="${transactions}">
                     <button type="button" class="list-group-item list-group-item-action">
                             ${transaction.date}:
-                        Transaction #${transaction.id},
-                        By: ${transaction.card}
+                                <fmt:message key="balance.transaction"/> #${transaction.id},
+                                <fmt:message key="balance.by"/>: ${transaction.card}
 
                         <div class="float-right">
-                            Amount: ${transaction.amount},
-                            Reminder: ${transaction.reminder}
+                            <fmt:message key="balance.amount"/>: ${transaction.amount},
+                            <fmt:message key="balance.reminder"/>: ${transaction.reminder}
                         </div>
                     </button>
                 </c:forEach>

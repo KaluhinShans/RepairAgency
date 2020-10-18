@@ -16,30 +16,29 @@
 <body>
 <jsp:include page="../includes/navbar.jsp"/>
 <div class="container mt-5">
-    <a class="btn btn-light" href="/orders" role="button">&laquo; Back</a>
+    <a class="btn btn-light" href="/orders" role="button">&laquo; <fmt:message key="back"/></a>
     <br>
     <br>
     <form action="/orders/add" method="post">
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label for="inputEmail4">Problem</label>
+                <label for="inputEmail4"><fmt:message key="orders.problem"/></label>
                 <input type="text" required class="form-control" id="inputEmail4" name="orderName">
-                <small class="form-text text-muted"><fmt:message key="neverShare"/></small>
+                <small class="form-text text-muted"><fmt:message key="orders.problem.description"/></small>
             </div>
             <div class="form-group col-md-6"></div>
         </div>
         <div class="form-group">
-            <label for="textarea">Description</label>
-            <small class="form-text text-muted"><fmt:message key="neverShare"/></small>
+            <label for="textarea"><fmt:message key="orders.description"/></label>
+            <small class="form-text text-muted"><fmt:message key="orders.description.description"/></small>
             <textarea class="form-control" required rows="3" id="textarea" name="description"></textarea>
         </div>
         <div class="form-group">
-            <label for="inputAddress">Address</label>
+            <label for="inputAddress"><fmt:message key="orders.location"/></label>
             <input type="text" required class="form-control" id="inputAddress" placeholder="Street, house, flat" name="address">
-            <small class="form-text text-muted"><fmt:message key="neverShare"/></small>
         </div>
 
-        <button type="submit" class="btn btn-primary">Add</button>
+        <button type="submit" class="btn btn-primary"><fmt:message key="orders.addOrder"/></button>
     </form>
 
 </div>

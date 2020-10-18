@@ -12,7 +12,7 @@ import java.util.List;
 
 public class BillingService {
     BillingDao billingDao = new BillingDao();
-    private final Logger log = Logger.getLogger(UserService.class);
+    private final Logger log = Logger.getLogger(BillingService.class);
     public String error;
 
     public List<Billing> getUserBillings(int userId, int startPosition, int total) {
@@ -31,6 +31,7 @@ public class BillingService {
         UserDao userDao = new UserDao();
         userDao.setVariable("balance", user.getId(), user.getBalance());
 
+        log.info("Top up user balance");
         MailSenderService.sendTopUpBalance(user, sum);
         return true;
     }
@@ -40,6 +41,7 @@ public class BillingService {
         Order order = orderService.getByID(orderId);
         if (user.getId() != order.getUserId()) {
             error = "notUsersOrderError";
+            log.info("User can't pay for not him order");
             return false;
         }
 
@@ -47,6 +49,7 @@ public class BillingService {
 
         if (sum < 0) {
             error = "notEnoughMoneyError";
+            log.info("User have not enough money");
             return false;
         } else {
             user.setBalance(sum);
@@ -58,12 +61,17 @@ public class BillingService {
             billingDao.insert(billing);
             orderService.setOrderStatus(orderId, OrderStatus.PENDING);
 
+            log.info("User paid for order");
             MailSenderService.sendOrderPayment(user, order);
             return true;
         }
     }
 
     public boolean withdrawBalance(User user, int sum, String card) {
+        if(user.getBalance() - sum <= 0){
+            log.info("User have not enough money for withdraw balance");
+            return false;
+        }
         user.setBalance(user.getBalance() - sum);
         Billing billing = new Billing();
         billing.setReminder(user.getBalance());
@@ -75,6 +83,7 @@ public class BillingService {
         UserDao userDao = new UserDao();
         userDao.setVariable("balance", user.getId(), user.getBalance());
 
+        log.info("User withdraw balance for " + sum);
         MailSenderService.sendWithdrawBalance(user, sum, card);
         return true;
     }

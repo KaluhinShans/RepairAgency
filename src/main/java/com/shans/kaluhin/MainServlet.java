@@ -17,7 +17,8 @@ public class MainServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (req.getSession().getAttribute("user") == null) {
-            int id = isUserRemembered(req);
+            //int id = isUserRemembered(req);
+            int id = 2;
             if (id != -1) {
                 HttpSession session = req.getSession();
                 UserService userService = new UserService();
