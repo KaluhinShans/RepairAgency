@@ -16,15 +16,17 @@ public class MainServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
         if (req.getSession().getAttribute("user") == null) {
-            //int id = isUserRemembered(req);
-            int id = 2;
+            int id = isUserRemembered(req);
             if (id != -1) {
                 HttpSession session = req.getSession();
                 UserService userService = new UserService();
                 User user = userService.getUserByID(id);
                 session.setAttribute("user", user);
                 log.info("User logged by remember me");
+                resp.sendRedirect(req.getContextPath() + req.getRequestURI());
+                return;
             }
         }
         RequestDispatcher view = req.getRequestDispatcher("/WEB-INF/jsp/index.jsp");

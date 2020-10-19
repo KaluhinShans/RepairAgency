@@ -24,7 +24,6 @@ public class AddOrderServlet  extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         User user = (User) req.getSession().getAttribute("user");
-
         String name = req.getParameter("orderName");
         String description = req.getParameter("description");
         String address = req.getParameter("address");
@@ -34,7 +33,6 @@ public class AddOrderServlet  extends HttpServlet {
         order.setDescription(description);
         order.setLocation(address);
         order.setUserId(user.getId());
-
         OrderService orderService = new OrderService();
         orderService.saveOrder(order);
 

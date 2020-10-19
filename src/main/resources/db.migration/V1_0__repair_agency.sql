@@ -1,3 +1,16 @@
+CREATE DATABASE repair_agency
+    WITH
+    OWNER = postgres
+    ENCODING = 'UTF8'
+    LC_COLLATE = 'Russian_Russia.1251'
+    LC_CTYPE = 'Russian_Russia.1251'
+    TABLESPACE = pg_default
+    CONNECTION LIMIT = -1;
+
+COMMENT ON DATABASE repair_agency
+    IS 'epam project ';
+
+
 CREATE TABLE usr
 (
     id              integer                NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
@@ -6,8 +19,7 @@ CREATE TABLE usr
     password        character varying(255) NOT NULL,
     name            character varying(255) NOT NULL,
     last_name       character varying(255),
-    balance         integer,
-    phone           integer,
+    balance         integer NOT NULL,
     photo           character varying(255),
     locale          character varying(255),
     PRIMARY KEY (id),

@@ -21,8 +21,8 @@
                 <select required name="searchByStatus" class="form-control ml-2">
                     <option value="ALL"><fmt:message key="ALL"/></option>
                     <c:choose>
-                        <c:when test="${param['searchByStatus'] != null}">
-                            <option selected hidden value="${param['searchByStatus']}"><fmt:message key="${param['searchByStatus']}"/></option>
+                        <c:when test="${param['status'] != null}">
+                            <option selected hidden value="${param['status']}"><fmt:message key="${param['status']}"/></option>
                             <option value="PENDING"><fmt:message key="PENDING"/></option>
                         </c:when>
                         <c:otherwise>
@@ -35,6 +35,24 @@
                     <option value="REJECT"><fmt:message key="REJECT"/></option>
                 </select>
 
+                <select name="sort" class="form-control ml-2">
+                    <c:choose>
+                        <c:when test="${param['sort'] != null}">
+                            <option selected hidden value="${param['sort']}">
+                                <fmt:message key="${param['sort']}"/>
+                            </option>
+                            <option value="none"> <fmt:message key="none"/></option>
+                        </c:when>
+                        <c:otherwise>
+                            <option value="none" selected><fmt:message key="none"/></option>
+                        </c:otherwise>
+                    </c:choose>
+                    <option value="date ASC"><fmt:message key="date ASC"/></option>
+                    <option value="date DESC"><fmt:message key="date DESC"/></option>
+                    <option value="price ASC"><fmt:message key="price ASC"/></option>
+                    <option value="price DESC"><fmt:message key="price DESC"/><</option>
+                </select>
+
                 <button type="submit" class="btn btn-primary ml-2"><fmt:message key="search"/></button>
             </form>
         </div>
@@ -42,7 +60,7 @@
     <jsp:include page="./includes/pagination.jsp"/>
 
     <c:choose>
-    <c:when test="${orders != null}">
+    <c:when test="${orders != null && !orders.isEmpty()}">
     <div class="card-deck">
         <c:forEach var="order" items="${orders}">
             <div class="card my-3">
@@ -52,7 +70,7 @@
                         <a href="/orders/reject?orderId=${order.id}"
                            class="btn btn-outline-danger btn-sm float-right"><fmt:message key="orders.reject"/></a>
                         </c:if>
-                        <h6 class="card-subtitle mb-2"><fmt:message key="orders.status"/>: ${order.status}</h6>
+                        <h6 class="card-subtitle mb-2"><fmt:message key="orders.status"/>: <fmt:message key="${order.status}"/></h6>
                         <br>
                         <h6 class="card-subtitle mb-2"><fmt:message key="orders.description"/>: ${order.description}</h6>
                         <br>

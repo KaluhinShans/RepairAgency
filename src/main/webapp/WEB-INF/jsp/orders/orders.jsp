@@ -37,7 +37,7 @@
     
     <jsp:include page="../includes/pagination.jsp"/>
     <c:choose>
-        <c:when test="${orders != null}">
+        <c:when test="${orders != null }">
             <div class="card-deck">
                 <c:forEach var="order" items="${orders}">
                     <div class="card my-3">
@@ -48,7 +48,7 @@
                                        class="btn btn-outline-danger btn-sm float-right"><fmt:message key="orders.reject"/></a>
                                 </c:if>
                             </h5>
-                            <h6 class="card-subtitle mb-2"><fmt:message key="orders.status"/>: ${order.status}</h6>
+                            <h6 class="card-subtitle mb-2"><fmt:message key="orders.status"/>: <fmt:message key="${order.status}"/></h6>
                             <br>
                             <h6 class="card-subtitle mb-2"><fmt:message key="orders.description"/>: ${order.description}</h6>
                             <br>
@@ -68,7 +68,7 @@
                                 <br>
                             </c:if>
                             <h6 class="card-subtitle mb-2 text-muted"><fmt:message key="orders.location"/>: ${order.location}</h6>
-                            <h6 class="card-subtitle mb-2 text-muted"><fmt:message key="orders.location"/>: ${order.date}</h6>
+                            <h6 class="card-subtitle mb-2 text-muted"><fmt:message key="orders.date"/>: ${order.date}</h6>
                             <div class="dropdown-divider"></div>
                             <c:if test="${order.price > 0}">
                                 <br>

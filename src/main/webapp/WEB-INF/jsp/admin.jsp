@@ -18,17 +18,37 @@
 <jsp:include page="./includes/navbar.jsp"/>
 
 <div class="container mt-5">
-    <jsp:include page="./includes/pagination.jsp"/>
 
     <div class="form-row">
         <div class="form-group col-md-6">
             <form method="get" action="/usersList" class="form-inline">
-                <input type="email" name="searchByEmail" class="form-control"
+                <input type="email" name="email" class="form-control"
                        placeholder="<fmt:message key="search.byEmail"/>">
+
+                <select name="sort" class="form-control ml-2">
+                    <c:choose>
+                        <c:when test="${param['sort'] != null}">
+                            <option selected hidden value="${param['sort']}">
+                                <fmt:message key="${param['sort']}"/>
+                            </option>
+                            <option value="none"> <fmt:message key="none"/></option>
+                        </c:when>
+                        <c:otherwise>
+                            <option value="none" selected><fmt:message key="none"/></option>
+                        </c:otherwise>
+                    </c:choose>
+                    <option value="name ASC"><fmt:message key="name ASC"/></option>
+                    <option value="name DESC"><fmt:message key="name DESC"/></option>
+                    <option value="balance ASC"><fmt:message key="balance ASC"/></option>
+                    <option value="balance DESC"><fmt:message key="balance DESC"/></option>
+                </select>
+
                 <button type="submit" class="btn btn-primary ml-2"><fmt:message key="search"/></button>
             </form>
         </div>
     </div>
+
+    <jsp:include page="./includes/pagination.jsp"/>
 
     <c:if test="${users.size() <= 1}">
         <a class="btn btn-light" href="/usersList" role="button">&laquo; <fmt:message key="back"/></a>
@@ -48,7 +68,8 @@
                                        data-toggle="modal" data-target="#replenishUser${user.id}"><fmt:message key="balance.replenish"/> <fmt:message key="balance"/></a>
                                 </h5>
                                 <fmt:message key="email"/>: ${user.email} <br>
-                                <fmt:message key="roles"/>: ${user.roles}
+                                <fmt:message key="roles"/>: ${user.roles} <br>
+                                <fmt:message key="balance"/>: ${user.balance} $
                                 <div class="float-right">
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="checkbox" id="inlineCheckbox2"

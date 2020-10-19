@@ -35,7 +35,7 @@ public class OrderService {
         Order order = orderDao.findById(orderId);
         User user = order.getUser();
         MailSenderService.sendOrderStatusUpdate(user, order);
-        log.info("Order " + orderId + "get status: " + status.name());
+        log.info("Order " + orderId + " get status: " + status.name());
     }
 
     public int getNumberOfRows() {
@@ -47,6 +47,14 @@ public class OrderService {
 
     public List<Order> getAllOrders(int startPosition, int total) {
         return orderDao.findAll(startPosition, total);
+    }
+
+    public List<Order> getAllSortedOrders(String sortBy, int startPosition, int total) {
+        return orderDao.findAllSorted(sortBy, startPosition, total);
+    }
+
+    public List<Order> getOrdersByUser(int userId, int startPosition, int total) {
+        return orderDao.findOrdersByUser(userId, startPosition, total);
     }
 
     public List<Order> getOrdersByStatus(OrderStatus status, int startPosition, int total) {
@@ -61,8 +69,17 @@ public class OrderService {
         return orderDao.findOrdersByMaster(masterId, startPosition, total);
     }
 
-    public List<Order> getOrdersByUser(int userId, int startPosition, int total) {
-        return orderDao.findOrdersByUser(userId, startPosition, total);
+    public List<Order> getSortedOrdersByStatus(OrderStatus status, String sortBy, int startPosition, int total) {
+        return orderDao.findBy("status", status.name(), sortBy, startPosition, total);
+    }
+
+    public List<Order> getSortedOrdersByStatusAndMaster(OrderStatus status, int masterId, String sortBy, int startPosition, int total) {
+        return orderDao.findSortedOrdersByStatusAndMaster(status, masterId, startPosition, total, sortBy);
+    }
+
+    public List<Order> getSortedOrdersByMaster(int masterId, String sortBy, int startPosition, int total) {
+        return orderDao.findBy("master_id", masterId, sortBy, startPosition, total);
+
     }
 
     public void finishOrder(User master, int orderId) {
@@ -72,5 +89,60 @@ public class OrderService {
         int sum = (int) (order.getPrice() * 0.8);
         billingService.topUpBalance(master, sum, "Repair Agency");
         log.info("Order is done, and master get salary");
+    }
+
+    public List<Order> getSortedOrders(String masterId, String status, String sort, int startPosition, int totalOrders) {
+        boolean needSort = true;
+        boolean needMaster = true;
+        boolean needStatus = true;
+
+        if (sort == null || sort.equals("none")) {
+            needSort = false;
+        }
+        if (masterId == null || masterId.equals("-1")) {
+            needMaster = false;
+        }
+        if (status == null || status.equals("ALL")) {
+            needStatus = false;
+        }
+
+        if (needMaster) {
+            if (needStatus) {
+                if (needSort) {
+                    //return master, status, sort
+                    return getSortedOrdersByStatusAndMaster(OrderStatus.valueOf(status), Integer.parseInt(masterId), sort, startPosition, totalOrders);
+                } else {
+                    //return master, status
+                    return getOrdersByStatusAndMaster(OrderStatus.valueOf(status), Integer.parseInt(masterId), startPosition, totalOrders);
+                }
+            } else {
+                if (needSort) {
+                    //return master, sort
+                    return getSortedOrdersByMaster(Integer.parseInt(masterId), sort, startPosition, totalOrders);
+                } else {
+                    //return master
+                    return getOrdersByMaster(Integer.parseInt(masterId), startPosition, totalOrders);
+                }
+
+            }
+        }
+
+        if (needStatus) {
+            if (needSort) {
+                //return status, sort
+                return getSortedOrdersByStatus(OrderStatus.valueOf(status), sort, startPosition, totalOrders);
+            } else {
+                //return status
+                return getOrdersByStatus(OrderStatus.valueOf(status), startPosition, totalOrders);
+            }
+        }
+
+        if (needSort) {
+            //return sort
+            return getAllSortedOrders(sort, startPosition, totalOrders);
+        } else {
+            //return all
+            return getAllOrders(startPosition, totalOrders);
+        }
     }
 }

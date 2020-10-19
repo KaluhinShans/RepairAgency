@@ -41,11 +41,6 @@
             <input type="email" class="form-control" id="InputEmail" name="email"
                    value="<%=user.getEmail()%>">
         </div>
-        <div class="form-group">
-            <label for="phone"><fmt:message key="phone"/></label>
-            <input type="number" class="form-control" id="phone" name="phone"
-                   value="<%=user.getPhone()%>">
-        </div>
 
         <div class="form-group">
             <label for="name"><fmt:message key="name"/></label>

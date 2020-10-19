@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page isELIgnored="false" %>
@@ -10,7 +10,7 @@
 
 <html>
 <head>
-    <title><fmt:message key="addOrder"/></title>
+    <title><fmt:message key="orders.addOrder"/></title>
     <jsp:include page="../includes/headers.jsp"/>
 </head>
 <body>
@@ -19,7 +19,7 @@
     <a class="btn btn-light" href="/orders" role="button">&laquo; <fmt:message key="back"/></a>
     <br>
     <br>
-    <form action="/orders/add" method="post">
+    <form action="/orders/add" method="post" accept-charset="utf-8">
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="inputEmail4"><fmt:message key="orders.problem"/></label>

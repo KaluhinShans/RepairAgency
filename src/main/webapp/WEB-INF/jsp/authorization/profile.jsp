@@ -122,8 +122,14 @@
                     <button type="button" class="list-group-item list-group-item-action">
                             ${transaction.date}:
                                 <fmt:message key="balance.transaction"/> #${transaction.id},
-                                <fmt:message key="balance.by"/>: ${transaction.card}
-
+                                <c:choose>
+                                    <c:when test="${transaction.orderId > 0}">
+                                        <fmt:message key="balance.for"/>: ${transaction.orderId}
+                                    </c:when>
+                                    <c:otherwise>
+                                        <fmt:message key="balance.by"/>: ${transaction.card}
+                                    </c:otherwise>
+                                </c:choose>
                         <div class="float-right">
                             <fmt:message key="balance.amount"/>: ${transaction.amount},
                             <fmt:message key="balance.reminder"/>: ${transaction.reminder}
@@ -135,8 +141,6 @@
             <br>
             <jsp:include page="../includes/pagination.jsp"/>
         </div>
-
-
     </div>
 
 </body>

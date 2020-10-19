@@ -66,4 +66,17 @@ public class Billing {
     public void setReminder(int reminder) {
         this.reminder = reminder;
     }
+
+    @Override
+    public String toString() {
+        return "Billing{" +
+                "id=" + id +
+                ", amount=" + amount +
+                ", userId=" + userId +
+                ", orderId=" + orderId +
+                ", reminder=" + reminder +
+                ", card='" + card + '\'' +
+                ", date=" + date +
+                '}';
+    }
 }

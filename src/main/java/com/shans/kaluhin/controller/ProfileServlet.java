@@ -39,13 +39,14 @@ public class ProfileServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Part filePart = req.getPart("photo");
-        User user = (User) req.getSession(false).getAttribute("user");
+        User user = (User) req.getSession().getAttribute("user");
+        Part photo = req.getPart("photo");
+        String email = req.getParameter("email");
+        String name = req.getParameter("name");
+        String lastName = req.getParameter("lastName");
 
-        if (filePart.getSize() > 0) {
-            UserService userService = new UserService();
-            userService.savePhoto(user, filePart);
-        }
+        UserService userService = new UserService();
+        userService.editProfile(user, email, name, lastName, photo);
 
         resp.sendRedirect(req.getContextPath() + "/profile");
     }

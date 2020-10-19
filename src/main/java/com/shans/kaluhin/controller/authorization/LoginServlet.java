@@ -19,7 +19,7 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if(req.getSession().getAttribute("user") != null){
+        if (req.getSession().getAttribute("user") != null) {
             resp.sendRedirect(req.getContextPath() + "/");
             return;
         }
@@ -29,9 +29,9 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if(!isCaptchaFill(req.getParameter("g-recaptcha-response"))){
+        if (!isCaptchaFill(req.getParameter("g-recaptcha-response"))) {
             req.setAttribute("error", "captchaError");
-            req.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(req, resp);
+            doGet(req, resp);
             return;
         }
 
@@ -56,11 +56,11 @@ public class LoginServlet extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/");
         } else {
             req.setAttribute("error", userService.error);
-            req.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(req, resp);
+            doGet(req, resp);
         }
     }
 
-    public static boolean isCaptchaFill(String recaptchaResponse){
+    public static boolean isCaptchaFill(String recaptchaResponse) {
         String googleCaptcha = "https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s";
         try {
             HttpClient client = HttpClient.newHttpClient();
@@ -71,7 +71,7 @@ public class LoginServlet extends HttpServlet {
             HttpResponse<String> response = client.send(request,
                     HttpResponse.BodyHandlers.ofString());
 
-           return response.body().split(": ")[1].split(",")[0].equals("true");
+            return response.body().split(": ")[1].split(",")[0].equals("true");
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }

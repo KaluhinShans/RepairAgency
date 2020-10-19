@@ -32,10 +32,8 @@ public class LocaleFilter implements Filter {
                 }
             }
         } else if (user != null) {
-            log.info("set user language");
             req.getSession().setAttribute("lang", user.getLocale());
         } else if (req.getSession().getAttribute("lang") == null) {
-            log.info("set default language");
             req.getSession().setAttribute("lang", Locales.En.name());
         }
         chain.doFilter(request, response);

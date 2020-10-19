@@ -16,7 +16,7 @@ public class BillingService {
     public String error;
 
     public List<Billing> getUserBillings(int userId, int startPosition, int total) {
-        return billingDao.findUserBilling(userId, startPosition, total);
+        return billingDao.findBillingsByUser(userId, startPosition, total);
     }
 
     public boolean topUpBalance(User user, int sum, String card) {
@@ -45,6 +45,12 @@ public class BillingService {
             return false;
         }
 
+        if (!order.getStatus().equals(OrderStatus.PAYMENT)) {
+            error = "alreadyPayError";
+            log.info("User already pay for this order");
+            return false;
+        }
+
         int sum = user.getBalance() - order.getPrice();
 
         if (sum < 0) {
@@ -52,14 +58,18 @@ public class BillingService {
             log.info("User have not enough money");
             return false;
         } else {
-            user.setBalance(sum);
             Billing billing = new Billing();
             billing.setOrderId(orderId);
             billing.setUserId(user.getId());
             billing.setAmount(-order.getPrice());
             billing.setReminder(sum);
             billingDao.insert(billing);
+
             orderService.setOrderStatus(orderId, OrderStatus.PENDING);
+
+            UserService userService = new UserService();
+            userService.setBalance(user.getId(), sum);
+            user.setBalance(sum);
 
             log.info("User paid for order");
             MailSenderService.sendOrderPayment(user, order);
@@ -68,7 +78,7 @@ public class BillingService {
     }
 
     public boolean withdrawBalance(User user, int sum, String card) {
-        if(user.getBalance() - sum <= 0){
+        if (user.getBalance() - sum <= 0) {
             log.info("User have not enough money for withdraw balance");
             return false;
         }

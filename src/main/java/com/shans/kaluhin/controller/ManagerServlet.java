@@ -46,7 +46,11 @@ public class ManagerServlet extends HttpServlet {
     }
 
     private void pagination(HttpServletRequest req) {
+        String masterId = req.getParameter("master");
+        String status = req.getParameter("status");
+        String sort = req.getParameter("sort");
         String spage = req.getParameter("page");
+
         int page = 1;
 
         if (spage != null) {
@@ -54,30 +58,8 @@ public class ManagerServlet extends HttpServlet {
         }
 
         int startPosition = page * totalOrders - totalOrders;
-        req.setAttribute("page", page);
-
-        filterOrders(req, startPosition);
-    }
-
-    private void filterOrders(HttpServletRequest req, int startPosition) {
-        List<Order> orders;
-        String masterId = req.getParameter("searchByMaster");
-        String status = req.getParameter("searchByStatus");
-
         OrderService orderService = new OrderService();
-        if (masterId == null || status == null) {
-            orders = orderService.getOrdersByStatus(OrderStatus.VERIFICATION, startPosition, totalOrders);
-        } else if (masterId.equals("-1")) {
-            if (status.equals("ALL")) {
-                orders = orderService.getAllOrders(startPosition, totalOrders);
-            } else {
-                orders = orderService.getOrdersByStatus(OrderStatus.valueOf(status), startPosition, totalOrders);
-            }
-        } else if (status.equals("ALL")) {
-            orders = orderService.getOrdersByMaster(Integer.parseInt(masterId), startPosition, totalOrders);
-        } else {
-            orders = orderService.getOrdersByStatusAndMaster(OrderStatus.valueOf(status), Integer.parseInt(masterId), startPosition, totalOrders);
-        }
+        List<Order> orders = orderService.getSortedOrders(masterId, status, sort, startPosition, totalOrders);
 
         int nOfPages = orderService.getNumberOfRows() / totalOrders;
 
@@ -88,5 +70,6 @@ public class ManagerServlet extends HttpServlet {
         req.setAttribute("orders", orders);
 
         req.setAttribute("nOfPages", nOfPages);
+        req.setAttribute("page", page);
     }
 }

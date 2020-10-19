@@ -33,14 +33,14 @@ public class AdminServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if(req.getRequestURI().equals("/usersList/replenishUser")){
+        if (req.getRequestURI().equals("/usersList/replenishUser")) {
             int userId = Integer.parseInt(req.getParameter("userId"));
             int sum = Integer.parseInt(req.getParameter("sum"));
 
             BillingService billingService = new BillingService();
             UserService userService = new UserService();
             billingService.topUpBalance(userService.getUserByID(userId), sum, "Repair Agency");
-            doGet(req,resp);
+            doGet(req, resp);
             return;
         }
 
@@ -60,7 +60,8 @@ public class AdminServlet extends HttpServlet {
 
     private void pagination(HttpServletRequest req) {
         String spage = req.getParameter("page");
-        String email = req.getParameter("searchByEmail");
+        String email = req.getParameter("email");
+        String sort = req.getParameter("sort");
         int page = 1;
 
         if (spage != null) {
@@ -70,15 +71,8 @@ public class AdminServlet extends HttpServlet {
         int startPosition = page * totalUsers - totalUsers;
 
         UserService userService = new UserService();
-        List<User> users = new ArrayList<>();
-        if (email != null) {
-            User user = userService.getUserByEmail(email);
-            if (user != null) {
-                users.add(user);
-            }
-        } else {
-            users = userService.getAllUsers(startPosition, totalUsers);
-        }
+        List<User> users = userService.getSortedUsers(email, sort, startPosition, totalUsers);
+
         int nOfPages = userService.getNumberOfRows() / totalUsers;
 
         if (nOfPages % totalUsers > 0) {
@@ -89,4 +83,5 @@ public class AdminServlet extends HttpServlet {
         req.setAttribute("page", page);
         req.setAttribute("nOfPages", nOfPages);
     }
+
 }

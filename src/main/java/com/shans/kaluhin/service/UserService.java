@@ -12,6 +12,8 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -104,6 +106,10 @@ public class UserService {
         return userDao.findByRole(Role.MASTER);
     }
 
+    private List<User> getAllSortedUsers(String sort, int startPosition, int totalUsers) {
+        return userDao.findAllSorted(sort, startPosition, totalUsers);
+    }
+
     public int getNumberOfRows() {
         if (userDao.totalRows == 0) {
             return 1;
@@ -125,7 +131,7 @@ public class UserService {
             }
 
             user.setPhoto(name);
-            userDao.savePhoto(user);
+            userDao.setPhoto(user);
             log.info("User photo saved");
         } catch (IOException e) {
             e.printStackTrace();
@@ -133,4 +139,49 @@ public class UserService {
         }
     }
 
+    public List<User> getSortedUsers(String email, String sort, int startPosition, int totalUsers) {
+        if (email != null && !email.isEmpty()) {
+            User user = getUserByEmail(email);
+
+            List<User> users = new ArrayList<>();
+            if (user != null) {
+                // add user with this email
+                users.add(user);
+            }
+            return users;
+        } else if (sort != null && !sort.isEmpty()) {
+            //return sorted users
+            return getAllSortedUsers(sort, startPosition, totalUsers);
+        } else {
+            // return all users
+            return getAllUsers(startPosition, totalUsers);
+        }
+    }
+
+
+    public void setBalance(int id, int sum) {
+        userDao.setVariable("balance", id, sum);
+    }
+
+    public void editProfile(User user, String email, String name, String lastName, Part photo) {
+        if (photo.getSize() > 0) {
+            savePhoto(user, photo);
+        }
+        if (!user.getName().equals(name)) {
+            user.setName(name);
+            userDao.setVariable("name", user.getId(), name);
+        }
+        if (!user.getLastName().equals(lastName)) {
+            user.setLastName(lastName);
+            userDao.setVariable("last_name", user.getId(), lastName);
+        }
+        if (!user.getEmail().equals(email)) {
+            user.setActivationCode(UUID.randomUUID().toString());
+            user.setEmail(email);
+            userDao.setActivationCode(user);
+            userDao.setVariable("email", user.getId(), email);
+
+            MailSenderService.sendChangeEmail(user);
+        }
+    }
 }

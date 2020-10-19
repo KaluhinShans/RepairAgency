@@ -11,33 +11,6 @@ public class OrderDao implements Dao<Order> {
     public int totalRows;
 
     @Override
-    public Order findById(int orderId) {
-        return findBy("id", orderId);
-    }
-
-    @Override
-    public List<Order> findAll(int start, int total) {
-        String selectOrders = "Select *,count(*) OVER() AS total_count from orders LIMIT ? OFFSET ?";
-        List<Order> orders = new ArrayList<>();
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(selectOrders)) {
-            preparedStatement.setInt(1, total);
-            preparedStatement.setInt(2, start);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                totalRows = resultSet.getInt("total_count");
-                Order order = buildObjectFromResultSet(resultSet);
-                orders.add(order);
-            }
-            resultSet.close();
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
-        }
-        return orders;
-    }
-
-    @Override
     public void insert(Order order) {
         String addOrder = "INSERT INTO orders(user_id, master_id, price, name, description, location, status, date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = DBConnection.getConnection();
@@ -60,6 +33,49 @@ public class OrderDao implements Dao<Order> {
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
+    }
+
+    @Override
+    public List<Order> findAll(int start, int total) {
+        String selectOrders = "Select *, count(*) OVER() AS total_count from orders LIMIT ? OFFSET ?";
+        List<Order> orders = new ArrayList<>();
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(selectOrders)) {
+            preparedStatement.setInt(1, total);
+            preparedStatement.setInt(2, start);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                totalRows = resultSet.getInt("total_count");
+                Order order = buildObjectFromResultSet(resultSet);
+                orders.add(order);
+            }
+            resultSet.close();
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
+        return orders;
+    }
+
+    public List<Order> findAllSorted(String sortBy, int start, int total) {
+        String find = String.format("SELECT *, count(*) OVER() AS total_count FROM orders ORDER BY %s LIMIT ? OFFSET ?", sortBy);
+        List<Order> orders = new ArrayList<>();
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(find)) {
+            preparedStatement.setInt(1, total);
+            preparedStatement.setInt(2, start);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                totalRows = resultSet.getInt("total_count");
+                Order order = buildObjectFromResultSet(resultSet);
+                orders.add(order);
+            }
+            resultSet.close();
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
+        return orders;
     }
 
     @Override
@@ -98,12 +114,13 @@ public class OrderDao implements Dao<Order> {
         return null;
     }
 
-    public List<Order> findOrdersByStatus(OrderStatus status, int start, int total) {
-        String find = "SELECT *,count(*) OVER() AS total_count FROM orders WHERE status = ? LIMIT ? OFFSET ?";
+    @Override
+    public List<Order> findBy(String by, String value, int start, int total) {
+        String find = String.format("SELECT *, count(*) OVER() AS total_count FROM orders WHERE %s = ? LIMIT ? OFFSET ?", by);
         List<Order> orders = new ArrayList<>();
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(find)) {
-            preparedStatement.setString(1, status.name());
+            preparedStatement.setString(1, value);
             preparedStatement.setInt(2, total);
             preparedStatement.setInt(3, start);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -119,15 +136,57 @@ public class OrderDao implements Dao<Order> {
         return null;
     }
 
-    public List<Order> findOrdersByStatusAndMaster(OrderStatus status, int masterId, int start, int total) {
-        String find = "SELECT *, count(*) OVER() AS total_count FROM orders WHERE status = ? AND master_id = ? LIMIT ? OFFSET ?";
+    @Override
+    public List<Order> findBy(String by, int value, int start, int total) {
+        String find = String.format("SELECT *, count(*) OVER() AS total_count FROM orders WHERE %s = ? LIMIT ? OFFSET ?", by);
         List<Order> orders = new ArrayList<>();
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(find)) {
-            preparedStatement.setString(1, status.name());
-            preparedStatement.setInt(2, masterId);
-            preparedStatement.setInt(3, total);
-            preparedStatement.setInt(4, start);
+            preparedStatement.setInt(1, value);
+            preparedStatement.setInt(2, total);
+            preparedStatement.setInt(3, start);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                totalRows = resultSet.getInt("total_count");
+                orders.add(buildObjectFromResultSet(resultSet));
+            }
+            resultSet.close();
+            return orders;
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<Order> findBy(String by, String value, String sortBy, int start, int total) {
+        String find = String.format("SELECT *, count(*) OVER() AS total_count FROM orders WHERE %s = ? ORDER BY %s LIMIT ? OFFSET ?", by, sortBy);
+        List<Order> orders = new ArrayList<>();
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(find)) {
+            preparedStatement.setString(1, value);
+            preparedStatement.setInt(2, total);
+            preparedStatement.setInt(3, start);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                totalRows = resultSet.getInt("total_count");
+                orders.add(buildObjectFromResultSet(resultSet));
+            }
+            resultSet.close();
+            return orders;
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<Order> findBy(String by, int value, String sortBy, int start, int total) {
+        String find = String.format("SELECT *, count(*) OVER() AS total_count FROM orders WHERE %s = ? ORDER BY %s LIMIT ? OFFSET ?", by, sortBy);
+        List<Order> orders = new ArrayList<>();
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(find)) {
+            preparedStatement.setInt(1, value);
+            preparedStatement.setInt(2, total);
+            preparedStatement.setInt(3, start);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 totalRows = resultSet.getInt("total_count");
@@ -170,6 +229,7 @@ public class OrderDao implements Dao<Order> {
     @Override
     public Order buildObjectFromResultSet(ResultSet resultSet) throws SQLException {
         Order order = new Order();
+
         order.setId(resultSet.getInt("id"));
         order.setUserId(resultSet.getInt("user_id"));
         order.setMasterId(resultSet.getInt("master_id"));
@@ -183,14 +243,31 @@ public class OrderDao implements Dao<Order> {
         return order;
     }
 
+    public Order findById(int orderId) {
+        return findBy("id", orderId);
+    }
+
     public List<Order> findOrdersByMaster(int masterId, int start, int total) {
-        String find = "SELECT *, count(*) OVER() AS total_count FROM orders WHERE master_id = ? LIMIT ? OFFSET ?";
+        return findBy("master_id", masterId, start, total);
+    }
+
+    public List<Order> findOrdersByUser(int userId, int start, int total) {
+        return findBy("user_id", userId, start, total);
+    }
+
+    public List<Order> findOrdersByStatus(OrderStatus status, int start, int total) {
+        return findBy("status", status.name(), start, total);
+    }
+
+    public List<Order> findOrdersByStatusAndMaster(OrderStatus status, int masterId, int start, int total) {
+        String find = "SELECT *, count(*) OVER() AS total_count FROM orders WHERE status = ? AND master_id = ? LIMIT ? OFFSET ?";
         List<Order> orders = new ArrayList<>();
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(find)) {
-            preparedStatement.setInt(1, masterId);
-            preparedStatement.setInt(2, total);
-            preparedStatement.setInt(3, start);
+            preparedStatement.setString(1, status.name());
+            preparedStatement.setInt(2, masterId);
+            preparedStatement.setInt(3, total);
+            preparedStatement.setInt(4, start);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 totalRows = resultSet.getInt("total_count");
@@ -204,14 +281,15 @@ public class OrderDao implements Dao<Order> {
         return null;
     }
 
-    public List<Order> findOrdersByUser(int userId, int start, int total) {
-        String find = "SELECT *, count(*) OVER() AS total_count FROM orders WHERE user_id = ? LIMIT ? OFFSET ?";
+    public List<Order> findSortedOrdersByStatusAndMaster(OrderStatus status, int masterId, int start, int total, String sortBy) {
+        String find = String.format("SELECT *, count(*) OVER() AS total_count FROM orders WHERE status = ? AND master_id = ? ORDER BY %s LIMIT ? OFFSET ?", sortBy);
         List<Order> orders = new ArrayList<>();
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(find)) {
-            preparedStatement.setInt(1, userId);
-            preparedStatement.setInt(2, total);
-            preparedStatement.setInt(3, start);
+            preparedStatement.setString(1, status.name());
+            preparedStatement.setInt(2, masterId);
+            preparedStatement.setInt(3, total);
+            preparedStatement.setInt(4, start);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 totalRows = resultSet.getInt("total_count");
@@ -224,4 +302,5 @@ public class OrderDao implements Dao<Order> {
         }
         return null;
     }
+
 }

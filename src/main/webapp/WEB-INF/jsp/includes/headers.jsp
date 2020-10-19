@@ -13,3 +13,4 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.2.0/turbolinks.js"></script>
 
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">

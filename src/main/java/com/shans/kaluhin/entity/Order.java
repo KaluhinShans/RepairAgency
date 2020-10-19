@@ -121,4 +121,19 @@ public class Order {
     public boolean isDone() {
         return status.equals(OrderStatus.DONE);
     }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", location='" + location + '\'' +
+                ", userId=" + userId +
+                ", masterId=" + masterId +
+                ", status=" + status +
+                ", date=" + date +
+                '}';
+    }
 }

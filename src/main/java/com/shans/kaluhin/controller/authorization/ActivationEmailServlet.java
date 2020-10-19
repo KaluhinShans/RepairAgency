@@ -1,5 +1,6 @@
 package com.shans.kaluhin.controller.authorization;
 
+import com.shans.kaluhin.entity.User;
 import com.shans.kaluhin.service.UserService;
 
 import javax.servlet.ServletException;
@@ -23,11 +24,13 @@ public class ActivationEmailServlet extends HttpServlet {
             req.setAttribute("error", "emailActivateError");
         }
 
+        User user = (User) req.getSession().getAttribute("user");
 
-        if(req.getSession().getAttribute("user") == null){
-            req.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(req, resp);
+        if(user == null){
+            req.getRequestDispatcher("/WEB-INF/jsp/authorization/login.jsp").forward(req, resp);
         }else{
-            req.getRequestDispatcher("/WEB-INF/jsp/profile.jsp").forward(req, resp);
+            user.setActivationCode(null);
+            req.getRequestDispatcher("/WEB-INF/jsp/authorization/profile.jsp").forward(req, resp);
         }
     }
 }

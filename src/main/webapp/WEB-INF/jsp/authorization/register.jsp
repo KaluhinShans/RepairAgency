@@ -15,6 +15,11 @@
 <body>
 <jsp:include page="../includes/navbar.jsp"/>
 <div class="container mt-5">
+    <form class="form-inline ml-4  float-right" action="/login" method="get">
+        <button class="btn btn-outline-success btn-sm my-2 my-sm-0" type="submit"><fmt:message key="orLogin"/></button>
+    </form>
+    <br>
+
     <c:if test="${error != null}">
         <div class="alert alert-danger" role="alert">
             <fmt:message key="${error}"/>
@@ -45,7 +50,7 @@
         </div>
         <div class="g-recaptcha" data-sitekey="6Le077sZAAAAAIeMmf4scOUpty-44ymjx8yMb39t"></div>
         <br>
-        <a href="/login"><fmt:message key="orLogin"/></a><br>
+
         <div class="col-sm-6 mt-3">
             <button type="submit" class="btn btn-primary"><fmt:message key="registration"/></button>
         </div>

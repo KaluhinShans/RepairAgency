@@ -1,5 +1,6 @@
 package com.shans.kaluhin.DAO;
 
+import com.shans.kaluhin.entity.Order;
 import com.shans.kaluhin.entity.User;
 import com.shans.kaluhin.entity.enums.Locales;
 import com.shans.kaluhin.entity.enums.Role;
@@ -12,29 +13,51 @@ public class UserDao implements Dao<User> {
     public int totalRows;
 
     @Override
-    public User findById(int userId) {
-        return findBy("id", userId);
+    public void insert(User user) {
+        String addUser = "INSERT INTO usr(email, password, name, last_name, locale, activation_code, balance, photo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(addUser, Statement.RETURN_GENERATED_KEYS)) {
+
+            preparedStatement.setString(1, user.getEmail());
+            preparedStatement.setString(2, user.getPassword());
+            preparedStatement.setString(3, user.getName());
+            preparedStatement.setString(4, user.getLastName());
+            preparedStatement.setString(5, user.getLocale());
+            preparedStatement.setString(6, user.getActivationCode());
+            preparedStatement.setInt(7, 0);
+            preparedStatement.setString(8, "defaultProfile.jpg");
+            preparedStatement.execute();
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            rs.next();
+            int id = rs.getInt(1);
+            user.setId(id);
+            rs.close();
+
+            giveRole(user.getId(), Role.USER);
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
     }
 
-
-    public User findByActivationCode(String code) {
-        return findBy("activation_code", code);
-    }
-
-    public User findByEmail(String email) {
-        return findBy("email", email);
-    }
-
-    public void setLocale(User user) {
-        setVariable("locale", user.getId(), user.getLocale());
-    }
-
-    public void setActivationCode(User user) {
-        setVariable("activation_code", user.getId(), user.getActivationCode());
-    }
-
-    public void savePhoto(User user) {
-        setVariable("photo", user.getId(), user.getPhoto());
+    @Override
+    public List<User> findAll(int start, int total) {
+        String find = "SELECT *, count(*) OVER() AS total_count FROM usr LIMIT ? OFFSET ?";
+        List<User> users = new ArrayList<>();
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(find)) {
+            preparedStatement.setInt(1, total);
+            preparedStatement.setInt(2, start);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                totalRows = resultSet.getInt("total_count");
+                users.add(buildObjectFromResultSet(resultSet));
+            }
+            resultSet.close();
+            return users;
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
+        return null;
     }
 
     @Override
@@ -69,6 +92,50 @@ public class UserDao implements Dao<User> {
             return buildObjectFromResultSet(resultSet);
         } catch (SQLException throwable) {
 
+            throwable.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public List<User> findBy(String by, String value, int start, int total) {
+        String find = String.format("SELECT *, count(*) OVER() AS total_count FROM usr WHERE %s = ? LIMIT ? OFFSET ?", by);
+        List<User> users = new ArrayList<>();
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(find)) {
+            preparedStatement.setString(1, value);
+            preparedStatement.setInt(2, total);
+            preparedStatement.setInt(3, start);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                totalRows = resultSet.getInt("total_count");
+                users.add(buildObjectFromResultSet(resultSet));
+            }
+            resultSet.close();
+            return users;
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public List<User> findBy(String by, int value, int start, int total) {
+        String find = String.format("SELECT *, count(*) OVER() AS total_count FROM usr WHERE %s = ? LIMIT ? OFFSET ?", by);
+        List<User> users = new ArrayList<>();
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(find)) {
+            preparedStatement.setInt(1, value);
+            preparedStatement.setInt(2, total);
+            preparedStatement.setInt(3, start);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                totalRows = resultSet.getInt("total_count");
+                users.add(buildObjectFromResultSet(resultSet));
+            }
+            resultSet.close();
+            return users;
+        } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
         return null;
@@ -112,12 +179,56 @@ public class UserDao implements Dao<User> {
         user.setLastName(resultSet.getString("last_name"));
         user.setPhoto(resultSet.getString("photo"));
         user.setActivationCode(resultSet.getString("activation_code"));
-        user.setPhone(resultSet.getInt("phone"));
         user.setRoles(getUserRoles(user.getId()));
         user.setLocale(Locales.valueOf(resultSet.getString("locale")));
 
         return user;
     }
+
+    public User findById(int userId) {
+        return findBy("id", userId);
+    }
+
+    public User findByActivationCode(String code) {
+        return findBy("activation_code", code);
+    }
+
+    public User findByEmail(String email) {
+        return findBy("email", email);
+    }
+
+    public void setLocale(User user) {
+        setVariable("locale", user.getId(), user.getLocale());
+    }
+
+    public void setActivationCode(User user) {
+        setVariable("activation_code", user.getId(), user.getActivationCode());
+    }
+
+    public void setPhoto(User user) {
+        setVariable("photo", user.getId(), user.getPhoto());
+    }
+
+    public List<User> findAllSorted(String sortBy, int start, int total) {
+        String find = String.format("SELECT *, count(*) OVER() AS total_count FROM usr ORDER BY %s LIMIT ? OFFSET ?", sortBy);
+        List<User> users = new ArrayList<>();
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(find)) {
+            preparedStatement.setInt(1, total);
+            preparedStatement.setInt(2, start);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                totalRows = resultSet.getInt("total_count");
+                users.add(buildObjectFromResultSet(resultSet));
+            }
+            resultSet.close();
+            return users;
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
+        return null;
+    }
+
 
     public List<User> findByRole(Role role) {
         String selectUsers = "Select * from users_roles where usr_role = ?";
@@ -136,53 +247,6 @@ public class UserDao implements Dao<User> {
             throwable.printStackTrace();
         }
         return users;
-    }
-
-    @Override
-    public void insert(User user) {
-        String addUser = "INSERT INTO usr(email, password, name, last_name, locale, activation_code) VALUES (?, ?, ?, ?, ?, ?)";
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(addUser, Statement.RETURN_GENERATED_KEYS)) {
-
-            preparedStatement.setString(1, user.getEmail());
-            preparedStatement.setString(2, user.getPassword());
-            preparedStatement.setString(3, user.getName());
-            preparedStatement.setString(4, user.getLastName());
-            preparedStatement.setString(5, user.getLocale());
-            preparedStatement.setString(6, user.getActivationCode());
-            preparedStatement.execute();
-            ResultSet rs = preparedStatement.getGeneratedKeys();
-            rs.next();
-            int id = rs.getInt(1);
-            user.setId(id);
-            for (Role role : user.getRoles()) {
-                giveRole(user.getId(), role);
-            }
-            rs.close();
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
-        }
-    }
-
-    @Override
-    public List<User> findAll(int start, int total) {
-        String find = "SELECT * ,count(*) OVER() AS total_count FROM usr LIMIT ? OFFSET ?";
-        List<User> users = new ArrayList<>();
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(find)) {
-            preparedStatement.setInt(1, total);
-            preparedStatement.setInt(2, start);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                totalRows = resultSet.getInt("total_count");
-                users.add(buildObjectFromResultSet(resultSet));
-            }
-            resultSet.close();
-            return users;
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
-        }
-        return null;
     }
 
     public void giveRole(int userId, Role role) {

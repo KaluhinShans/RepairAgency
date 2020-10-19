@@ -31,7 +31,7 @@ public class RegisterServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (!LoginServlet.isCaptchaFill(req.getParameter("g-recaptcha-response"))) {
             req.setAttribute("error", "captchaError");
-            req.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(req, resp);
+            doGet(req, resp);
             return;
         }
 
@@ -43,19 +43,16 @@ public class RegisterServlet extends HttpServlet {
             user.setPassword(req.getParameter("password"));
             user.setName(req.getParameter("name"));
             user.setLastName(req.getParameter("lastName"));
-            user.getRoles().add(Role.USER);
-            user.setPhoto("defaultProfile.jpg");
             user.setLocale(Locales.valueOf((String) req.getSession().getAttribute("lang")));
             userService.save(user);
 
             HttpSession session = req.getSession();
             session.setAttribute("user", user);
-            req.setAttribute("email", user.getEmail());
 
             resp.sendRedirect(req.getContextPath() + "/");
         } else {
             req.setAttribute("error", userService.error);
-            req.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(req, resp);
+            doGet(req, resp);
         }
     }
 }

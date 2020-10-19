@@ -45,9 +45,9 @@ public class MasterServlet extends HttpServlet {
     }
 
     private void pagination(HttpServletRequest req, int masterId) {
+        String status = req.getParameter("status");
+        String sort = req.getParameter("sort");
         String spage = req.getParameter("page");
-        String status = req.getParameter("searchByStatus");
-        List<Order> orders;
         int page = 1;
 
         if (spage != null) {
@@ -57,13 +57,7 @@ public class MasterServlet extends HttpServlet {
         int startPosition = page * totalOrders - totalOrders;
 
         OrderService orderService = new OrderService();
-        if(status == null){
-          orders = orderService.getOrdersByStatusAndMaster(OrderStatus.PENDING, masterId, startPosition, totalOrders);
-        } else if (status.equals("ALL")) {
-            orders = orderService.getOrdersByMaster(masterId, startPosition, totalOrders);
-        } else {
-            orders = orderService.getOrdersByStatusAndMaster(OrderStatus.valueOf(status), masterId, startPosition, totalOrders);
-        }
+        List<Order> orders = orderService.getSortedOrders(String.valueOf(masterId), status, sort, startPosition, totalOrders);
         int nOfPages = orderService.getNumberOfRows() / totalOrders;
 
         if (nOfPages % totalOrders > 0) {

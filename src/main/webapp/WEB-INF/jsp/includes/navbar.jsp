@@ -53,7 +53,7 @@
             <c:when test="${user != null}">
                 <div class="dropdown">
                     <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <fmt:message key="balance"/>: <c:out value="${user.balance}"/>
+                        <fmt:message key="balance"/>: <c:out value="${user.balance}"/> $
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <a type="button" class="dropdown-item" data-toggle="modal" data-target="#replenish"><fmt:message key="balance.replenish"/></a>

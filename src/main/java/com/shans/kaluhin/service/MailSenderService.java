@@ -24,6 +24,15 @@ public class MailSenderService {
         log.info("Activation code send");
     }
 
+    public static void sendChangeEmail(User user){
+        String message = String.format("Hello, %s \n" +
+                "You change you email address, Please visit next link to activation your new email: " +
+                ProjectProperties.getProperty("host") + "/activate/?code=%s", user.getFullName(), user.getActivationCode());
+
+        MailSenderService.send(user.getEmail(), "Change email address", message);
+        log.info("Email change send");
+    }
+
     public static void sendOrderStatusUpdate(User user, Order order){
         String message = String.format("Hello, %s \n" +
                 "Your order received status '%s' \n" +
@@ -41,7 +50,7 @@ public class MailSenderService {
                 "Follow link to se more: " +
                 ProjectProperties.getProperty("host") + "/orders", user.getFullName(), order.getPrice(), order.getId(), order.getName());
 
-        MailSenderService.send(user.getEmail(), "New Order status", message);
+        MailSenderService.send(user.getEmail(), "Order payment", message);
         log.info("Order payment information send");
     }
 
@@ -53,7 +62,7 @@ public class MailSenderService {
                 "Follow link to se more: " +
                 ProjectProperties.getProperty("host") + "/profile", user.getFullName(), sum, user.getBalance());
 
-        MailSenderService.send(user.getEmail(), "New Order status", message);
+        MailSenderService.send(user.getEmail(), "Top up balance", message);
         log.info("Balance replenish information send to user");
     }
 
@@ -65,7 +74,7 @@ public class MailSenderService {
                 "Follow link to se more: " +
                 ProjectProperties.getProperty("host") + "/profile", user.getFullName(), sum, card, user.getBalance());
 
-        MailSenderService.send(user.getEmail(), "New Order status", message);
+        MailSenderService.send(user.getEmail(), "Withdraw balance", message);
         log.info("Cash out the balance information send to user");
     }
 

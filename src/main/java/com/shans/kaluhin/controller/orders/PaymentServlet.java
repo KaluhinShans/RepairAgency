@@ -38,7 +38,7 @@ public class PaymentServlet extends HttpServlet {
         BillingService billingService = new BillingService();
         if (req.getRequestURI().equals("/payment/withdraw")) {
             billingService.withdrawBalance(user, sum, card);
-        }else{
+        } else {
             billingService.topUpBalance(user, sum, card);
         }
 
