@@ -10,7 +10,7 @@ public class BillingDao implements Dao<Billing> {
     public int totalRows;
 
     @Override
-    public void insert(Billing billing) {
+    public boolean insert(Billing billing) {
         String addBilling = "INSERT INTO billing(user_id, order_id, amount, reminder, card, date) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(addBilling, Statement.RETURN_GENERATED_KEYS)) {
@@ -27,8 +27,10 @@ public class BillingDao implements Dao<Billing> {
             int id = rs.getInt(1);
             billing.setId(id);
             rs.close();
+            return true;
         } catch (SQLException throwable) {
             throwable.printStackTrace();
+            return false;
         }
     }
 

@@ -13,22 +13,40 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 public class UserService {
+    private UserDao userDao = new UserDao();
     private final Logger log = Logger.getLogger(UserService.class);
-    private final UserDao userDao = new UserDao();
+    private MailSenderService mailSender = new MailSenderService();
     public String error;
 
-    public void save(User user) {
+    public boolean save(User user) {
+        User userFromDB = getUserByEmail(user.getEmail());
+        if (userFromDB != null) {
+            log.info("User already register");
+            error = "emailAlreadyError";
+            return false;
+        }
+        if (user.getName().length() < 3) {
+            error = "nameShortError";
+            return false;
+        }
+        if (user.getLastName().length() < 3) {
+            error = "surnameShortError";
+            return false;
+        }
+        if (user.getPassword().length() < 5) {
+            error = "passwordShortError";
+            return false;
+        }
         user.hashPassword();
         user.setActivationCode(UUID.randomUUID().toString());
-        userDao.insert(user);
         log.info("Save user");
 
-        MailSenderService.sendActivationCode(user);
+        mailSender.sendActivationCode(user);
+        return userDao.insert(user);
     }
 
     public boolean isUserLogin(String email, String password) {
@@ -37,7 +55,7 @@ public class UserService {
         user.setPassword(password);
         user.hashPassword();
 
-        User userFromDB = getUserByEmail(user.getEmail());
+        User userFromDB = getUserByEmail(email);
 
         if (userFromDB == null) {
             log.info("User don't register");
@@ -53,16 +71,6 @@ public class UserService {
         return true;
     }
 
-    public boolean isUserExist(String email) {
-        User userFromDB = getUserByEmail(email);
-        if (userFromDB != null) {
-            log.info("User already register");
-            error = "emailAlreadyError";
-            return true;
-        }
-        return false;
-    }
-
     public void setLocale(User user, Locales locales) {
         user.setLocale(locales);
         userDao.setLocale(user);
@@ -71,10 +79,10 @@ public class UserService {
     public boolean activateEmail(String code) {
         User user = userDao.findByActivationCode(code);
         if (user == null) {
+            error = "emailActivateError";
             log.info("Email address don't activated");
             return false;
         }
-        user.setActivationCode(null);
         userDao.setActivationCode(user);
         log.info("Email address activated");
         return true;
@@ -98,16 +106,8 @@ public class UserService {
         return userDao.findById(id);
     }
 
-    public List<User> getAllUsers(int start, int total) {
-        return userDao.findAll(start, total);
-    }
-
     public List<User> getAllMasters() {
         return userDao.findByRole(Role.MASTER);
-    }
-
-    private List<User> getAllSortedUsers(String sort, int startPosition, int totalUsers) {
-        return userDao.findAllSorted(sort, startPosition, totalUsers);
     }
 
     public int getNumberOfRows() {
@@ -142,37 +142,39 @@ public class UserService {
     public List<User> getSortedUsers(String email, String sort, int startPosition, int totalUsers) {
         if (email != null && !email.isEmpty()) {
             User user = getUserByEmail(email);
-
             List<User> users = new ArrayList<>();
             if (user != null) {
-                // add user with this email
                 users.add(user);
             }
+            // return user with this email
             return users;
         } else if (sort != null && !sort.isEmpty()) {
             //return sorted users
-            return getAllSortedUsers(sort, startPosition, totalUsers);
+            return userDao.findAllSorted(sort, startPosition, totalUsers);
         } else {
             // return all users
-            return getAllUsers(startPosition, totalUsers);
+            return userDao.findAll(startPosition, totalUsers);
         }
     }
 
-
-    public void setBalance(int id, int sum) {
-        userDao.setVariable("balance", id, sum);
-    }
-
-    public void editProfile(User user, String email, String name, String lastName, Part photo) {
-        if (photo.getSize() > 0) {
+    public boolean editProfile(User user, String email, String name, String lastName, Part photo) {
+        if (photo != null && photo.getSize() > 0) {
             savePhoto(user, photo);
         }
         if (!user.getName().equals(name)) {
-            user.setName(name);
+            if (name.length() < 3){
+                error = "nameShortError";
+                return false;
+            }
+                user.setName(name);
             userDao.setVariable("name", user.getId(), name);
         }
         if (!user.getLastName().equals(lastName)) {
-            user.setLastName(lastName);
+            if (lastName.length() < 3){
+                error = "surnameShortError";
+                return false;
+            }
+                user.setLastName(lastName);
             userDao.setVariable("last_name", user.getId(), lastName);
         }
         if (!user.getEmail().equals(email)) {
@@ -181,7 +183,9 @@ public class UserService {
             userDao.setActivationCode(user);
             userDao.setVariable("email", user.getId(), email);
 
-            MailSenderService.sendChangeEmail(user);
+            mailSender.sendChangeEmail(user);
         }
+
+        return true;
     }
 }

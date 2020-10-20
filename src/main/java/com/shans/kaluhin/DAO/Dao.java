@@ -1,14 +1,12 @@
 package com.shans.kaluhin.DAO;
 
-import com.shans.kaluhin.entity.Order;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
 public interface Dao<T> {
 
-    void insert(T t);
+    boolean insert(T t);
 
     List<T> findAll(int start, int total);
 

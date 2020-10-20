@@ -16,7 +16,6 @@ import javax.servlet.http.Part;
 import java.io.IOException;
 import java.util.List;
 
-
 @WebServlet(name = "Profile")
 @MultipartConfig
 public class ProfileServlet extends HttpServlet {
@@ -24,7 +23,6 @@ public class ProfileServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        User user = (User) req.getSession(false).getAttribute("user");
 
         String uri = req.getRequestURI();
         if (uri.equals("/profile/edit")) {
@@ -32,7 +30,7 @@ public class ProfileServlet extends HttpServlet {
             view.forward(req, resp);
             return;
         }
-        pagination(req, user.getId());
+        pagination(req);
         RequestDispatcher view = req.getRequestDispatcher("/WEB-INF/jsp/authorization/profile.jsp");
         view.forward(req, resp);
     }
@@ -46,12 +44,16 @@ public class ProfileServlet extends HttpServlet {
         String lastName = req.getParameter("lastName");
 
         UserService userService = new UserService();
-        userService.editProfile(user, email, name, lastName, photo);
-
-        resp.sendRedirect(req.getContextPath() + "/profile");
+        if(userService.editProfile(user, email, name, lastName, photo)){
+            resp.sendRedirect(req.getContextPath() + "/profile");
+        }else{
+            req.setAttribute("error", userService.error);
+            doGet(req, resp);
+        }
     }
 
-    private void pagination(HttpServletRequest req, int userId) {
+    private void pagination(HttpServletRequest req) {
+        User user = (User) req.getSession().getAttribute("user");
         String spage = req.getParameter("page");
         int page = 1;
 
@@ -63,7 +65,7 @@ public class ProfileServlet extends HttpServlet {
 
         BillingService billingService = new BillingService();
 
-        List<Billing> transactions = billingService.getUserBillings(userId, startPosition, totalTransactions);
+        List<Billing> transactions = billingService.getUserBillings(user.getId(), startPosition, totalTransactions);
 
         int nOfPages = billingService.getNumberOfRows() / totalTransactions;
 

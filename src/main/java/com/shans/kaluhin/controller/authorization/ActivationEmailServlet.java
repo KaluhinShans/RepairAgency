@@ -21,7 +21,7 @@ public class ActivationEmailServlet extends HttpServlet {
         if(isActivated){
             req.setAttribute("message", "emailActivateSuccess");
         }else {
-            req.setAttribute("error", "emailActivateError");
+            req.setAttribute("error", userService.error);
         }
 
         User user = (User) req.getSession().getAttribute("user");

@@ -14,6 +14,11 @@
 <body>
 <jsp:include page="./includes/navbar.jsp"/>
 <div class="container mt-5">
+    <c:if test="${error != null}">
+        <div class="alert alert-danger" role="alert">
+            <fmt:message key="${error}"/>
+        </div>
+    </c:if>
 
     <div class="form-row">
         <div class="form-group col-md-8">

@@ -2,7 +2,6 @@ package com.shans.kaluhin.controller;
 
 import com.shans.kaluhin.entity.Order;
 import com.shans.kaluhin.entity.User;
-import com.shans.kaluhin.entity.enums.OrderStatus;
 import com.shans.kaluhin.service.OrderService;
 import com.shans.kaluhin.service.UserService;
 
@@ -35,14 +34,18 @@ public class ManagerServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         int masterId = Integer.parseInt(req.getParameter("selectedMaster"));
         int orderId = Integer.parseInt(req.getParameter("orderId"));
         int price = Integer.parseInt(req.getParameter("price"));
-        OrderService orderService = new OrderService();
-        orderService.saveManagerAnswer(price, masterId, orderId);
 
-        resp.sendRedirect(req.getContextPath() + "/ordersList");
+        OrderService orderService = new OrderService();
+        if(orderService.saveManagerAnswer(price, masterId, orderId)){
+            resp.sendRedirect(req.getContextPath() + "/ordersList");
+        }else{
+            req.setAttribute("error", orderService.error);
+            doGet(req, resp);
+        }
     }
 
     private void pagination(HttpServletRequest req) {

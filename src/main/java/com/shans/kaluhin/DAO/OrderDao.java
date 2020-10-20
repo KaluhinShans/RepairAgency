@@ -11,7 +11,7 @@ public class OrderDao implements Dao<Order> {
     public int totalRows;
 
     @Override
-    public void insert(Order order) {
+    public boolean insert(Order order) {
         String addOrder = "INSERT INTO orders(user_id, master_id, price, name, description, location, status, date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(addOrder, Statement.RETURN_GENERATED_KEYS)) {
@@ -30,8 +30,10 @@ public class OrderDao implements Dao<Order> {
             int id = rs.getInt(1);
             order.setId(id);
             rs.close();
+            return true;
         } catch (SQLException throwable) {
             throwable.printStackTrace();
+            return false;
         }
     }
 
@@ -243,64 +245,50 @@ public class OrderDao implements Dao<Order> {
         return order;
     }
 
-    public Order findById(int orderId) {
-        return findBy("id", orderId);
+    public void setStatus(int id, OrderStatus status){
+        setVariable("status", id, status.name());
     }
 
-    public List<Order> findOrdersByMaster(int masterId, int start, int total) {
+    public void setPrice(int id, int price){
+        setVariable("price", id, price);
+    }
+
+    public void setMaster(int id, int masterId){
+       setVariable("master_id", id, masterId);
+    }
+
+    public Order findById(int id) {
+        return findBy("id", id);
+    }
+
+    public List<Order> findByMaster(int masterId, int start, int total) {
         return findBy("master_id", masterId, start, total);
     }
 
-    public List<Order> findOrdersByUser(int userId, int start, int total) {
+    public List<Order> findByUser(int userId, int start, int total) {
         return findBy("user_id", userId, start, total);
     }
 
-    public List<Order> findOrdersByStatus(OrderStatus status, int start, int total) {
+    public List<Order> findByStatus(OrderStatus status, int start, int total) {
         return findBy("status", status.name(), start, total);
     }
 
-    public List<Order> findOrdersByStatusAndMaster(OrderStatus status, int masterId, int start, int total) {
-        String find = "SELECT *, count(*) OVER() AS total_count FROM orders WHERE status = ? AND master_id = ? LIMIT ? OFFSET ?";
-        List<Order> orders = new ArrayList<>();
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(find)) {
-            preparedStatement.setString(1, status.name());
-            preparedStatement.setInt(2, masterId);
-            preparedStatement.setInt(3, total);
-            preparedStatement.setInt(4, start);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                totalRows = resultSet.getInt("total_count");
-                orders.add(buildObjectFromResultSet(resultSet));
-            }
-            resultSet.close();
-            return orders;
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
-        }
-        return null;
+    public List<Order> findSortedByStatus(OrderStatus status, String sortBy, int startPosition, int total){
+        return findBy("status", status.name(), sortBy, startPosition, total);
     }
 
-    public List<Order> findSortedOrdersByStatusAndMaster(OrderStatus status, int masterId, int start, int total, String sortBy) {
-        String find = String.format("SELECT *, count(*) OVER() AS total_count FROM orders WHERE status = ? AND master_id = ? ORDER BY %s LIMIT ? OFFSET ?", sortBy);
-        List<Order> orders = new ArrayList<>();
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(find)) {
-            preparedStatement.setString(1, status.name());
-            preparedStatement.setInt(2, masterId);
-            preparedStatement.setInt(3, total);
-            preparedStatement.setInt(4, start);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                totalRows = resultSet.getInt("total_count");
-                orders.add(buildObjectFromResultSet(resultSet));
-            }
-            resultSet.close();
-            return orders;
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
-        }
-        return null;
+    public List<Order> findSortedByMaster(int masterId, String sortBy, int startPosition, int total){
+        return findBy("master_id", masterId, sortBy, startPosition, total);
+    }
+
+    public List<Order> findByStatusAndMaster(OrderStatus status, int masterId, int start, int total) {
+        String findBy = String.format("status = '%s' AND master_id", status.name());
+        return findBy(findBy, masterId, start, total);
+    }
+
+    public List<Order> findSortedByStatusAndMaster(OrderStatus status, int masterId, String sortBy, int start, int total) {
+        String findBy = String.format("status = '%s' AND master_id", status.name());
+        return findBy(findBy, masterId, sortBy, start, total);
     }
 
 }

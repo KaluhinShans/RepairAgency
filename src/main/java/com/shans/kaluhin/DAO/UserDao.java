@@ -1,6 +1,5 @@
 package com.shans.kaluhin.DAO;
 
-import com.shans.kaluhin.entity.Order;
 import com.shans.kaluhin.entity.User;
 import com.shans.kaluhin.entity.enums.Locales;
 import com.shans.kaluhin.entity.enums.Role;
@@ -13,7 +12,7 @@ public class UserDao implements Dao<User> {
     public int totalRows;
 
     @Override
-    public void insert(User user) {
+    public boolean insert(User user) {
         String addUser = "INSERT INTO usr(email, password, name, last_name, locale, activation_code, balance, photo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(addUser, Statement.RETURN_GENERATED_KEYS)) {
@@ -34,14 +33,36 @@ public class UserDao implements Dao<User> {
             rs.close();
 
             giveRole(user.getId(), Role.USER);
+            return true;
         } catch (SQLException throwable) {
             throwable.printStackTrace();
+            return false;
         }
     }
 
     @Override
     public List<User> findAll(int start, int total) {
         String find = "SELECT *, count(*) OVER() AS total_count FROM usr LIMIT ? OFFSET ?";
+        List<User> users = new ArrayList<>();
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(find)) {
+            preparedStatement.setInt(1, total);
+            preparedStatement.setInt(2, start);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                totalRows = resultSet.getInt("total_count");
+                users.add(buildObjectFromResultSet(resultSet));
+            }
+            resultSet.close();
+            return users;
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<User> findAllSorted(String sortBy, int start, int total) {
+        String find = String.format("SELECT *, count(*) OVER() AS total_count FROM usr ORDER BY %s LIMIT ? OFFSET ?", sortBy);
         List<User> users = new ArrayList<>();
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(find)) {
@@ -185,6 +206,9 @@ public class UserDao implements Dao<User> {
         return user;
     }
 
+    public void setBalance(int id, int balance){
+        setVariable("balance", id, balance);
+    }
     public User findById(int userId) {
         return findBy("id", userId);
     }
@@ -209,25 +233,7 @@ public class UserDao implements Dao<User> {
         setVariable("photo", user.getId(), user.getPhoto());
     }
 
-    public List<User> findAllSorted(String sortBy, int start, int total) {
-        String find = String.format("SELECT *, count(*) OVER() AS total_count FROM usr ORDER BY %s LIMIT ? OFFSET ?", sortBy);
-        List<User> users = new ArrayList<>();
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(find)) {
-            preparedStatement.setInt(1, total);
-            preparedStatement.setInt(2, start);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                totalRows = resultSet.getInt("total_count");
-                users.add(buildObjectFromResultSet(resultSet));
-            }
-            resultSet.close();
-            return users;
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
-        }
-        return null;
-    }
+
 
 
     public List<User> findByRole(Role role) {

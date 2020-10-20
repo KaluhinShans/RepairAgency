@@ -18,6 +18,11 @@
 <div class="container mt-5">
     <a class="btn btn-light" href="/orders" role="button">&laquo; <fmt:message key="back"/></a>
     <br>
+    <c:if test="${error != null}">
+        <div class="alert alert-danger" role="alert">
+            <fmt:message key="${error}"/>
+        </div>
+    </c:if>
     <br>
     <form action="/orders/add" method="post" accept-charset="utf-8">
         <div class="form-row">

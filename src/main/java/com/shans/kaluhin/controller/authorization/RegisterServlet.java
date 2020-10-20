@@ -2,7 +2,6 @@ package com.shans.kaluhin.controller.authorization;
 
 import com.shans.kaluhin.entity.User;
 import com.shans.kaluhin.entity.enums.Locales;
-import com.shans.kaluhin.entity.enums.Role;
 import com.shans.kaluhin.service.UserService;
 
 import javax.servlet.RequestDispatcher;
@@ -37,14 +36,14 @@ public class RegisterServlet extends HttpServlet {
 
         String email = req.getParameter("email");
         UserService userService = new UserService();
-        if (!userService.isUserExist(email)) {
-            User user = new User();
-            user.setEmail(email);
-            user.setPassword(req.getParameter("password"));
-            user.setName(req.getParameter("name"));
-            user.setLastName(req.getParameter("lastName"));
-            user.setLocale(Locales.valueOf((String) req.getSession().getAttribute("lang")));
-            userService.save(user);
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword(req.getParameter("password"));
+        user.setName(req.getParameter("name"));
+        user.setLastName(req.getParameter("lastName"));
+        user.setLocale(Locales.valueOf((String) req.getSession().getAttribute("lang")));
+
+        if (userService.save(user)) {
 
             HttpSession session = req.getSession();
             session.setAttribute("user", user);

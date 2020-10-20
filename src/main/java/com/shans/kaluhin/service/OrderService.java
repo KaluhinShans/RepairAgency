@@ -1,6 +1,7 @@
 package com.shans.kaluhin.service;
 
 import com.shans.kaluhin.DAO.OrderDao;
+import com.shans.kaluhin.DAO.UserDao;
 import com.shans.kaluhin.entity.Order;
 import com.shans.kaluhin.entity.User;
 import com.shans.kaluhin.entity.enums.OrderStatus;
@@ -10,31 +11,53 @@ import java.util.List;
 
 
 public class OrderService {
-    private final Logger log = Logger.getLogger(OrderService.class);
     private OrderDao orderDao = new OrderDao();
+    private UserDao userDao = new UserDao();
+    private Logger log = Logger.getLogger(OrderService.class);
+    private MailSenderService mailSender = new MailSenderService();
+    public String error;
 
-    public void saveOrder(Order order) {
-        orderDao.insert(order);
+    public boolean save(Order order) {
+        if(order.getName().length() < 5){
+            error = "problemShortError";
+            return false;
+        }
+        if(order.getDescription().length() < 20){
+            error = "descriptionShortError";
+            return false;
+        }
+        if(order.getLocation().length() < 10){
+            error = "locationShortError";
+            return false;
+        }
+
         log.info("User add new order");
+        return orderDao.insert(order);
     }
 
-    public Order getByID(int id) {
+    public Order getById(int id) {
         return orderDao.findById(id);
     }
 
-    public void saveManagerAnswer(int price, int managerId, int orderId) {
-        orderDao.setVariable("price", orderId, price);
-        orderDao.setVariable("master_id", orderId, managerId);
+    public boolean saveManagerAnswer(int price, int masterId, int orderId) {
+        if(price < 5){
+            log.info("Manager set low price");
+            error = "priceLowError";
+            return false;
+        }
+        orderDao.setPrice(orderId, price);
+        orderDao.setMaster(orderId, masterId);
         setOrderStatus(orderId, OrderStatus.PAYMENT);
         log.info("Manager check order");
+        return true;
     }
 
     public void setOrderStatus(int orderId, OrderStatus status) {
-        orderDao.setVariable("status", orderId, status.name());
+        orderDao.setStatus(orderId, status);
 
         Order order = orderDao.findById(orderId);
-        User user = order.getUser();
-        MailSenderService.sendOrderStatusUpdate(user, order);
+        User user = userDao.findById(order.getUserId());
+        mailSender.sendOrderStatusUpdate(user, order);
         log.info("Order " + orderId + " get status: " + status.name());
     }
 
@@ -45,41 +68,8 @@ public class OrderService {
         return orderDao.totalRows;
     }
 
-    public List<Order> getAllOrders(int startPosition, int total) {
-        return orderDao.findAll(startPosition, total);
-    }
-
-    public List<Order> getAllSortedOrders(String sortBy, int startPosition, int total) {
-        return orderDao.findAllSorted(sortBy, startPosition, total);
-    }
-
     public List<Order> getOrdersByUser(int userId, int startPosition, int total) {
-        return orderDao.findOrdersByUser(userId, startPosition, total);
-    }
-
-    public List<Order> getOrdersByStatus(OrderStatus status, int startPosition, int total) {
-        return orderDao.findOrdersByStatus(status, startPosition, total);
-    }
-
-    public List<Order> getOrdersByStatusAndMaster(OrderStatus status, int masterId, int startPosition, int total) {
-        return orderDao.findOrdersByStatusAndMaster(status, masterId, startPosition, total);
-    }
-
-    public List<Order> getOrdersByMaster(int masterId, int startPosition, int total) {
-        return orderDao.findOrdersByMaster(masterId, startPosition, total);
-    }
-
-    public List<Order> getSortedOrdersByStatus(OrderStatus status, String sortBy, int startPosition, int total) {
-        return orderDao.findBy("status", status.name(), sortBy, startPosition, total);
-    }
-
-    public List<Order> getSortedOrdersByStatusAndMaster(OrderStatus status, int masterId, String sortBy, int startPosition, int total) {
-        return orderDao.findSortedOrdersByStatusAndMaster(status, masterId, startPosition, total, sortBy);
-    }
-
-    public List<Order> getSortedOrdersByMaster(int masterId, String sortBy, int startPosition, int total) {
-        return orderDao.findBy("master_id", masterId, sortBy, startPosition, total);
-
+        return orderDao.findByUser(userId, startPosition, total);
     }
 
     public void finishOrder(User master, int orderId) {
@@ -110,18 +100,19 @@ public class OrderService {
             if (needStatus) {
                 if (needSort) {
                     //return master, status, sort
-                    return getSortedOrdersByStatusAndMaster(OrderStatus.valueOf(status), Integer.parseInt(masterId), sort, startPosition, totalOrders);
+                    return orderDao.findSortedByStatusAndMaster(OrderStatus.valueOf(status), Integer.parseInt(masterId), sort, startPosition, totalOrders);
                 } else {
                     //return master, status
-                    return getOrdersByStatusAndMaster(OrderStatus.valueOf(status), Integer.parseInt(masterId), startPosition, totalOrders);
+                    return orderDao.findByStatusAndMaster(OrderStatus.valueOf(status), Integer.parseInt(masterId), startPosition, totalOrders);
                 }
             } else {
                 if (needSort) {
                     //return master, sort
-                    return getSortedOrdersByMaster(Integer.parseInt(masterId), sort, startPosition, totalOrders);
+                    return orderDao.findSortedByMaster(Integer.parseInt(masterId), sort, startPosition, totalOrders);
                 } else {
                     //return master
-                    return getOrdersByMaster(Integer.parseInt(masterId), startPosition, totalOrders);
+                    return orderDao.findByMaster(Integer.parseInt(masterId), startPosition, totalOrders);
+
                 }
 
             }
@@ -130,19 +121,19 @@ public class OrderService {
         if (needStatus) {
             if (needSort) {
                 //return status, sort
-                return getSortedOrdersByStatus(OrderStatus.valueOf(status), sort, startPosition, totalOrders);
+                return orderDao.findSortedByStatus(OrderStatus.valueOf(status), sort, startPosition, totalOrders);
             } else {
                 //return status
-                return getOrdersByStatus(OrderStatus.valueOf(status), startPosition, totalOrders);
+                return orderDao.findByStatus(OrderStatus.valueOf(status), startPosition, totalOrders);
             }
         }
 
         if (needSort) {
             //return sort
-            return getAllSortedOrders(sort, startPosition, totalOrders);
+            return orderDao.findAllSorted(sort, startPosition, totalOrders);
         } else {
             //return all
-            return getAllOrders(startPosition, totalOrders);
+            return orderDao.findAll(startPosition, totalOrders);
         }
     }
 }

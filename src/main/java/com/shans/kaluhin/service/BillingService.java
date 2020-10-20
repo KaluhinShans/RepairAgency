@@ -11,8 +11,12 @@ import org.apache.log4j.Logger;
 import java.util.List;
 
 public class BillingService {
-    BillingDao billingDao = new BillingDao();
-    private final Logger log = Logger.getLogger(BillingService.class);
+    private BillingDao billingDao = new BillingDao();
+    private OrderService orderService = new OrderService();
+    private UserDao userDao = new UserDao();
+
+    private Logger log = Logger.getLogger(BillingService.class);
+    private MailSenderService mailSender = new MailSenderService();
     public String error;
 
     public List<Billing> getUserBillings(int userId, int startPosition, int total) {
@@ -20,6 +24,11 @@ public class BillingService {
     }
 
     public boolean topUpBalance(User user, int sum, String card) {
+        if (sum <= 0) {
+            error = "negativeSumError";
+            log.info("Negative sum");
+            return false;
+        }
         user.setBalance(user.getBalance() + sum);
         Billing billing = new Billing();
         billing.setReminder(user.getBalance());
@@ -28,17 +37,44 @@ public class BillingService {
         billing.setAmount(sum);
 
         billingDao.insert(billing);
-        UserDao userDao = new UserDao();
-        userDao.setVariable("balance", user.getId(), user.getBalance());
+
+        userDao.setBalance(user.getId(), user.getBalance());
 
         log.info("Top up user balance");
-        MailSenderService.sendTopUpBalance(user, sum);
+        mailSender.sendTopUpBalance(user, sum);
         return true;
     }
 
+    public boolean withdrawBalance(User user, int sum, String card) {
+        if (user.getBalance() - sum < 0) {
+            error = "notEnoughMoneyError";
+            log.info("User have not enough money for withdraw balance");
+            return false;
+        }
+        user.setBalance(user.getBalance() - sum);
+        Billing billing = new Billing();
+        billing.setReminder(user.getBalance());
+        billing.setUserId(user.getId());
+        billing.setCard(card);
+        billing.setAmount(-sum);
+
+        billingDao.insert(billing);
+        userDao.setBalance(user.getId(), user.getBalance());
+
+        log.info("User withdraw balance for " + sum);
+        mailSender.sendWithdrawBalance(user, sum, card);
+        return true;
+    }
+
+    public int getNumberOfRows() {
+        if (billingDao.totalRows == 0) {
+            return 1;
+        }
+        return billingDao.totalRows;
+    }
+
     public boolean payForOrder(User user, int orderId) {
-        OrderService orderService = new OrderService();
-        Order order = orderService.getByID(orderId);
+        Order order = orderService.getById(orderId);
         if (user.getId() != order.getUserId()) {
             error = "notUsersOrderError";
             log.info("User can't pay for not him order");
@@ -57,51 +93,23 @@ public class BillingService {
             error = "notEnoughMoneyError";
             log.info("User have not enough money");
             return false;
-        } else {
-            Billing billing = new Billing();
-            billing.setOrderId(orderId);
-            billing.setUserId(user.getId());
-            billing.setAmount(-order.getPrice());
-            billing.setReminder(sum);
-            billingDao.insert(billing);
-
-            orderService.setOrderStatus(orderId, OrderStatus.PENDING);
-
-            UserService userService = new UserService();
-            userService.setBalance(user.getId(), sum);
-            user.setBalance(sum);
-
-            log.info("User paid for order");
-            MailSenderService.sendOrderPayment(user, order);
-            return true;
         }
-    }
 
-    public boolean withdrawBalance(User user, int sum, String card) {
-        if (user.getBalance() - sum <= 0) {
-            log.info("User have not enough money for withdraw balance");
-            return false;
-        }
-        user.setBalance(user.getBalance() - sum);
         Billing billing = new Billing();
-        billing.setReminder(user.getBalance());
+        billing.setOrderId(orderId);
         billing.setUserId(user.getId());
-        billing.setCard(card);
-        billing.setAmount(-sum);
-
+        billing.setAmount(-order.getPrice());
+        billing.setReminder(sum);
         billingDao.insert(billing);
-        UserDao userDao = new UserDao();
-        userDao.setVariable("balance", user.getId(), user.getBalance());
 
-        log.info("User withdraw balance for " + sum);
-        MailSenderService.sendWithdrawBalance(user, sum, card);
+        orderService.setOrderStatus(orderId, OrderStatus.PENDING);
+
+        user.setBalance(sum);
+        userDao.setBalance(user.getId(), user.getBalance());
+
+        log.info("User paid for order");
+        mailSender.sendOrderPayment(user, order);
         return true;
-    }
 
-    public int getNumberOfRows() {
-        if (billingDao.totalRows == 0) {
-            return 1;
-        }
-        return billingDao.totalRows;
     }
 }

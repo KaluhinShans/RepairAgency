@@ -11,50 +11,50 @@ import javax.mail.internet.MimeMessage;
 
 
 public class MailSenderService {
-    private static final Logger log = Logger.getLogger(MailSenderService.class);
-    private static String name = ProjectProperties.getProperty("mail.username");
-    private static String password = ProjectProperties.getProperty("mail.password");
+    private final Logger log = Logger.getLogger(MailSenderService.class);
+    private String name = ProjectProperties.getProperty("mail.username");
+    private String password = ProjectProperties.getProperty("mail.password");
 
-    public static void sendActivationCode(User user){
+    public void sendActivationCode(User user){
         String message = String.format("Hello, %s \n" +
                 "Welcome to Repair Agency, Please visit next link to activation your email: " +
                 ProjectProperties.getProperty("host") + "/activate/?code=%s", user.getFullName(), user.getActivationCode());
 
-        MailSenderService.send(user.getEmail(), "Activation code", message);
+        send(user.getEmail(), "Activation code", message);
         log.info("Activation code send");
     }
 
-    public static void sendChangeEmail(User user){
+    public void sendChangeEmail(User user){
         String message = String.format("Hello, %s \n" +
                 "You change you email address, Please visit next link to activation your new email: " +
                 ProjectProperties.getProperty("host") + "/activate/?code=%s", user.getFullName(), user.getActivationCode());
 
-        MailSenderService.send(user.getEmail(), "Change email address", message);
+        send(user.getEmail(), "Change email address", message);
         log.info("Email change send");
     }
 
-    public static void sendOrderStatusUpdate(User user, Order order){
+    public void sendOrderStatusUpdate(User user, Order order){
         String message = String.format("Hello, %s \n" +
                 "Your order received status '%s' \n" +
                         "Follow link to se more: " +
                 ProjectProperties.getProperty("host") + "/orders", user.getFullName(), order.getStatus());
 
-        MailSenderService.send(user.getEmail(), "New Order status", message);
+        send(user.getEmail(), "New Order status", message);
         log.info("Status update send to user");
     }
 
-    public static void sendOrderPayment(User user, Order order){
+    public void sendOrderPayment(User user, Order order){
         String message = String.format("Hello, %s \n" +
-                "You paid %d$ for the order №: %d '%s'\n" +
+                "You paid %d $ for the order №: %d '%s'\n" +
                 "please wait while the master accepts your order \n" +
                 "Follow link to se more: " +
                 ProjectProperties.getProperty("host") + "/orders", user.getFullName(), order.getPrice(), order.getId(), order.getName());
 
-        MailSenderService.send(user.getEmail(), "Order payment", message);
+        send(user.getEmail(), "Order payment", message);
         log.info("Order payment information send");
     }
 
-    public static void sendTopUpBalance(User user, int sum){
+    public void sendTopUpBalance(User user, int sum){
         String message = String.format("Hello, %s \n" +
                 "Your balance has been replenished with %d $ \n" +
                 "Your balance: %d $ \n" +
@@ -62,11 +62,11 @@ public class MailSenderService {
                 "Follow link to se more: " +
                 ProjectProperties.getProperty("host") + "/profile", user.getFullName(), sum, user.getBalance());
 
-        MailSenderService.send(user.getEmail(), "Top up balance", message);
+        send(user.getEmail(), "Top up balance", message);
         log.info("Balance replenish information send to user");
     }
 
-    public static void sendWithdrawBalance(User user, int sum, String card){
+    public void sendWithdrawBalance(User user, int sum, String card){
         String message = String.format("Hello, %s \n" +
                 "Your balance has been charged %d $ for this card '%s' \n" +
                 "Your balance: %d $ \n" +
@@ -74,11 +74,11 @@ public class MailSenderService {
                 "Follow link to se more: " +
                 ProjectProperties.getProperty("host") + "/profile", user.getFullName(), sum, card, user.getBalance());
 
-        MailSenderService.send(user.getEmail(), "Withdraw balance", message);
+        send(user.getEmail(), "Withdraw balance", message);
         log.info("Cash out the balance information send to user");
     }
 
-   public static void send(String toEmail, String subject, String text){
+   public void send(String toEmail, String subject, String text){
        Session session = Session.getInstance(ProjectProperties.gerEmailProperties(), new Authenticator() {
            protected PasswordAuthentication getPasswordAuthentication() {
                return new PasswordAuthentication(name, password);
