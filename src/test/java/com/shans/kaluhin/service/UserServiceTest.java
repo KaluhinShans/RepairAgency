@@ -55,6 +55,38 @@ public class UserServiceTest {
         assertNull(service.error);
     }
 
+    @Test
+    public void testChangePassword(){
+        User user = new User();
+        user.setPassword("oldPas");
+        user.hashPassword();
+        assertTrue(service.changePassword(user, "oldPas", "newPas", "newPas"));
+        assertNull(service.error);
+    }
+    @Test
+    public void testChangePassword_validateNewPassword(){
+        User user = new User();
+        user.setPassword("oldPas");
+        user.hashPassword();
+        assertFalse(service.changePassword(user, "oldPas", "Pas", "Pas"));
+        assertEquals(service.error, "passwordShortError");
+    }
+    @Test
+    public void testChangePassword_oldPasswordWrong(){
+        User user = new User();
+        user.setPassword("Pas");
+        user.hashPassword();
+        assertFalse(service.changePassword(user, "oldPas", "newPas", "newPas"));
+        assertEquals(service.error, "oldPasswordError");
+    }
+    @Test
+    public void testChangePassword_differentNewPasswords(){
+        User user = new User();
+        user.setPassword("oldPas");
+        user.hashPassword();
+        assertFalse(service.changePassword(user, "oldPas", "newPas", "newPass"));
+        assertEquals(service.error, "repeatPasswordError");
+    }
 
     @Test
     public void testLoginUser_userNotLogin() {

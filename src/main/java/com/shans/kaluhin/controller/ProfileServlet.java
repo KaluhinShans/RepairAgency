@@ -38,12 +38,27 @@ public class ProfileServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = (User) req.getSession().getAttribute("user");
+        UserService userService = new UserService();
+        if(req.getRequestURI().equals("/profile/edit/password")){
+         String oldPassword = req.getParameter("old");
+         String newPassword = req.getParameter("new");
+         String repeatPassword = req.getParameter("repeat");
+
+         if(userService.changePassword(user, oldPassword, newPassword, repeatPassword)){
+             resp.sendRedirect("/profile");
+         }else{
+             req.setAttribute("error", userService.error);
+             req.setAttribute("show", "show");
+             req.getRequestDispatcher("/WEB-INF/jsp/authorization/profileEdit.jsp").forward(req, resp);
+             return;
+         }
+        }
+
         Part photo = req.getPart("photo");
         String email = req.getParameter("email");
         String name = req.getParameter("name");
         String lastName = req.getParameter("lastName");
 
-        UserService userService = new UserService();
         if(userService.editProfile(user, email, name, lastName, photo)){
             resp.sendRedirect(req.getContextPath() + "/profile");
         }else{

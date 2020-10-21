@@ -2,6 +2,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://shans.su" prefix="shans"%>
 <%@ page isELIgnored="false" %>
 
 <%User user = (User) request.getSession(false).getAttribute("user");%>
@@ -136,7 +137,6 @@
                         </div>
                     </button>
                 </c:forEach>
-
             </div>
             <br>
             <jsp:include page="../includes/pagination.jsp"/>

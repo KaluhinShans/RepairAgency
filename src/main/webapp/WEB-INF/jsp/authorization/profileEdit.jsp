@@ -21,6 +21,43 @@
     <h4><fmt:message key="editProfile"/></h4>
     <br>
 
+    <div class="form-group">
+        <label for="password"><fmt:message key="changePassword"/>: </label>
+        <br>
+        <button type="button" class="btn btn-outline-success" data-toggle="collapse" data-target="#Collapse"
+                id="password">
+            <fmt:message key="password"/>
+        </button>
+        <br>
+
+        <div class="collapse ${show}"
+             id="Collapse">
+            <div class="card card-body">
+                <c:if test="${error != null}">
+                    <div class="alert alert-danger" role="alert">
+                        <fmt:message key="${error}"/>
+                    </div>
+                </c:if>
+                <form method="post" action="edit/password">
+                    <div class="form-group">
+                        <label for="Input">Old password</label>
+                        <input type="text" class="form-control" id="Input" placeholder="Old password" name="old">
+                    </div>
+                    <div class="form-group">
+                        <label for="Input2">New password</label>
+                        <input type="text" class="form-control" id="Input2" placeholder="New password" name="new">
+                    </div>
+                    <div class="form-group">
+                        <label for="Input3">Repeat password</label>
+                        <input type="text" class="form-control" id="Input3" placeholder="Repeat password" name="repeat">
+                    </div>
+                    <div class="col-sm-6 mt-3">
+                        <button type="submit" class="btn btn-primary"><fmt:message key="save"/></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <form class="md-form" action="/profile" method="post" enctype="multipart/form-data">
         <div class="form-group">
@@ -28,14 +65,7 @@
             <br>
             <input type="file" name="photo" id="photo">
         </div>
-        <div class="form-group">
-            <label for="password"><fmt:message key="changePassword"/>: </label>
-            <br>
-            <button type="button" class="btn btn-outline-success" data-toggle="modal" id="password"
-                    data-target="#exampleModalLong">
-                <fmt:message key="password"/>
-            </button>
-        </div>
+
         <div class="form-group">
             <label for="InputEmail"><fmt:message key="email"/></label>
             <input type="email" class="form-control" id="InputEmail" name="email"

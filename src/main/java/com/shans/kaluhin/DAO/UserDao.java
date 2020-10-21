@@ -205,10 +205,14 @@ public class UserDao implements Dao<User> {
 
         return user;
     }
+    public void setPassword(int id, String password){
+        setVariable("password", id, password);
+    }
 
     public void setBalance(int id, int balance){
         setVariable("balance", id, balance);
     }
+
     public User findById(int userId) {
         return findBy("id", userId);
     }

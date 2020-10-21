@@ -188,4 +188,26 @@ public class UserService {
 
         return true;
     }
+
+    public boolean changePassword(User user, String oldPassword, String newPassword, String repeatPassword) {
+        String hashPassword = String.valueOf(oldPassword.hashCode());
+        if(newPassword.length() < 6){
+            error = "passwordShortError";
+            return false;
+        }
+        if(!user.getPassword().equals(hashPassword)){
+            error = "oldPasswordError";
+            return false;
+        }
+        if(!newPassword.equals(repeatPassword)){
+            error = "repeatPasswordError";
+            return false;
+        }
+        user.setPassword(newPassword);
+        user.hashPassword();
+
+        userDao.setPassword(user.getId(), newPassword);
+        log.info("User: " + user.getEmail() +" change his password");
+        return true;
+    }
 }

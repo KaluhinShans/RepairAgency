@@ -4,9 +4,18 @@
         xmlns="http://java.sun.com/xml/j2ee"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd">
-    <tlib-version>version_number</tlib-version>
-    <jsp-version>version_number</jsp-version>
-    <short-name>TagLibraryName</short-name>
-    <uri>unique_string</uri>
-    <display-name>display_name</display-name>
+    <tlib-version>1.0</tlib-version>
+    <jsp-version>2.0</jsp-version>
+    <short-name>shansTags</short-name>
+    <uri>http://shans.su</uri>
+
+    <tag>
+        <name>transactionTag</name>
+        <tag-class>com.shans.kaluhin.tags.TransactionTag</tag-class>
+
+        <attribute>
+            <name>billings</name>
+            <required>true</required>
+        </attribute>
+    </tag>
 </taglib>
