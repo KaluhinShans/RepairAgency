@@ -1,5 +1,6 @@
 package com.shans.kaluhin.entity;
 
+import com.shans.kaluhin.DAO.CommentDao;
 import com.shans.kaluhin.entity.enums.OrderStatus;
 import com.shans.kaluhin.service.UserService;
 
@@ -13,6 +14,7 @@ public class Order {
     private String location;
     private int userId;
     private int masterId;
+    private int commentId;
     private OrderStatus status = OrderStatus.VERIFICATION;
     private Date date = new Date(System.currentTimeMillis());
 
@@ -86,6 +88,11 @@ public class Order {
         return userService.getUserByID(masterId);
     }
 
+    public Comment getComment(){
+        CommentDao commentDao = new CommentDao();
+        return commentDao.findById(commentId);
+    }
+
     public void setUserId(int userId) {
         this.userId = userId;
     }
@@ -96,6 +103,14 @@ public class Order {
 
     public void setMasterId(int masterId) {
         this.masterId = masterId;
+    }
+
+    public int getCommentId() {
+        return commentId;
+    }
+
+    public void setCommentId(int commentId) {
+        this.commentId = commentId;
     }
 
     public boolean isNew() {

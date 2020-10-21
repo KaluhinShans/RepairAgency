@@ -1,7 +1,9 @@
 package com.shans.kaluhin.service;
 
+import com.shans.kaluhin.DAO.CommentDao;
 import com.shans.kaluhin.DAO.OrderDao;
 import com.shans.kaluhin.DAO.UserDao;
+import com.shans.kaluhin.entity.Comment;
 import com.shans.kaluhin.entity.Order;
 import com.shans.kaluhin.entity.User;
 import com.shans.kaluhin.entity.enums.OrderStatus;
@@ -13,20 +15,22 @@ import java.util.List;
 public class OrderService {
     private OrderDao orderDao = new OrderDao();
     private UserDao userDao = new UserDao();
+    private CommentDao commentDao = new CommentDao();
+
     private Logger log = Logger.getLogger(OrderService.class);
     private MailSenderService mailSender = new MailSenderService();
     public String error;
 
     public boolean save(Order order) {
-        if(order.getName().length() < 5){
+        if (order.getName().length() < 5) {
             error = "problemShortError";
             return false;
         }
-        if(order.getDescription().length() < 20){
+        if (order.getDescription().length() < 20) {
             error = "descriptionShortError";
             return false;
         }
-        if(order.getLocation().length() < 10){
+        if (order.getLocation().length() < 10) {
             error = "locationShortError";
             return false;
         }
@@ -40,7 +44,7 @@ public class OrderService {
     }
 
     public boolean saveManagerAnswer(int price, int masterId, int orderId) {
-        if(price < 5){
+        if (price < 5) {
             log.info("Manager set low price");
             error = "priceLowError";
             return false;
@@ -62,14 +66,14 @@ public class OrderService {
     }
 
     public int getNumberOfRows() {
-        if (orderDao.totalRows == 0) {
-            return 1;
-        }
         return orderDao.totalRows;
     }
 
     public List<Order> getOrdersByUser(int userId, int startPosition, int total) {
         return orderDao.findByUser(userId, startPosition, total);
+    }
+    public List<Comment> getCommentsByMaster(int userId, int startPosition, int totalComments) {
+        return commentDao.findAllByMasterId(userId, startPosition, totalComments);
     }
 
     public void finishOrder(User master, int orderId) {
@@ -136,4 +140,20 @@ public class OrderService {
             return orderDao.findAll(startPosition, totalOrders);
         }
     }
+
+    public boolean rateOrder(int orderId, Comment comment) {
+        if (comment.getRate() <= 0) {
+            error = "nullRateError";
+            return false;
+        }
+        if (comment.getDescription().length() < 20) {
+            error = "descriptionShortError";
+            return false;
+        }
+        commentDao.insert(comment);
+        orderDao.setCommentId(orderId, comment.getId());
+        return true;
+    }
+
+
 }

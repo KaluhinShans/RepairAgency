@@ -67,9 +67,6 @@ public class BillingService {
     }
 
     public int getNumberOfRows() {
-        if (billingDao.totalRows == 0) {
-            return 1;
-        }
         return billingDao.totalRows;
     }
 

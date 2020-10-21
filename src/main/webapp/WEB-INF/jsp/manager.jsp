@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://shans.su" prefix="shans"%>
 <%@ page isELIgnored="false" %>
 
 <fmt:setLocale value="${sessionScope.lang}"/>
@@ -14,6 +15,9 @@
 <body>
 <jsp:include page="./includes/navbar.jsp"/>
 <div class="container mt-5">
+    <h2> <fmt:message key="manager"/></h2>
+    <br>
+
     <c:if test="${error != null}">
         <div class="alert alert-danger" role="alert">
             <fmt:message key="${error}"/>
@@ -67,7 +71,7 @@
                             <option selected hidden value="${param['sort']}">
                                 <fmt:message key="${param['sort']}"/>
                             </option>
-                            <option value="none"> <fmt:message key="none"/></option>
+                            <option value="none"><fmt:message key="none"/></option>
                         </c:when>
                         <c:otherwise>
                             <option value="none" selected><fmt:message key="none"/></option>
@@ -156,6 +160,12 @@
                                     <button type="submit" class="btn btn-primary"><fmt:message
                                             key="orders.submit"/></button>
                                 </form>
+                                </c:if>
+                                <c:if test="${order.commentId != 0}">
+                                    <c:set var="comment" value="${order.comment}"/>
+                                    <h6 class="card-subtitle mb-2">Rate: </h6>
+                                    <shans:rateTag rate="${comment.rate}"> </shans:rateTag>
+                                    <label>Comment: ${comment.description}</label>
                                 </c:if>
                         </div>
                     </div>

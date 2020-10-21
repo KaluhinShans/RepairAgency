@@ -1,5 +1,6 @@
 package com.shans.kaluhin.DAO;
 
+import com.shans.kaluhin.DAO.interfaces.ElasticDao;
 import com.shans.kaluhin.entity.Order;
 import com.shans.kaluhin.entity.enums.OrderStatus;
 
@@ -7,7 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderDao implements Dao<Order> {
+public class OrderDao implements ElasticDao<Order> {
     public int totalRows;
 
     @Override
@@ -235,6 +236,7 @@ public class OrderDao implements Dao<Order> {
         order.setId(resultSet.getInt("id"));
         order.setUserId(resultSet.getInt("user_id"));
         order.setMasterId(resultSet.getInt("master_id"));
+        order.setCommentId(resultSet.getInt("comment_id"));
         order.setPrice(resultSet.getInt("price"));
         order.setName(resultSet.getString("name"));
         order.setDescription(resultSet.getString("description"));
@@ -243,6 +245,11 @@ public class OrderDao implements Dao<Order> {
         order.setDate(resultSet.getDate("date"));
 
         return order;
+    }
+
+    @Override
+    public Order findById(int id) {
+        return findBy("id", id);
     }
 
     public void setStatus(int id, OrderStatus status){
@@ -257,8 +264,8 @@ public class OrderDao implements Dao<Order> {
        setVariable("master_id", id, masterId);
     }
 
-    public Order findById(int id) {
-        return findBy("id", id);
+    public void setCommentId(int id, int commentId){
+        setVariable("comment_id", id, commentId);
     }
 
     public List<Order> findByMaster(int masterId, int start, int total) {
@@ -290,5 +297,6 @@ public class OrderDao implements Dao<Order> {
         String findBy = String.format("status = '%s' AND master_id", status.name());
         return findBy(findBy, masterId, sortBy, start, total);
     }
+
 
 }

@@ -8,6 +8,7 @@ C:\Users\Shansonye\Desktop\Practice\RepairAgency\src\main\java\com\shans\kaluhin
 C:\Users\Shansonye\Desktop\Practice\RepairAgency\src\main\java\com\shans\kaluhin\filter\SecurityFilter.java
 C:\Users\Shansonye\Desktop\Practice\RepairAgency\src\main\java\com\shans\kaluhin\controller\orders\OrdersServlet.java
 C:\Users\Shansonye\Desktop\Practice\RepairAgency\src\main\java\com\shans\kaluhin\service\BillingService.java
+C:\Users\Shansonye\Desktop\Practice\RepairAgency\src\main\java\com\shans\kaluhin\DAO\interfaces\ElasticDao.java
 C:\Users\Shansonye\Desktop\Practice\RepairAgency\src\main\java\com\shans\kaluhin\service\MailSenderService.java
 C:\Users\Shansonye\Desktop\Practice\RepairAgency\src\main\java\com\shans\kaluhin\controller\AdminServlet.java
 C:\Users\Shansonye\Desktop\Practice\RepairAgency\src\main\java\com\shans\kaluhin\controller\authorization\RegisterServlet.java
@@ -15,9 +16,9 @@ C:\Users\Shansonye\Desktop\Practice\RepairAgency\src\main\java\com\shans\kaluhin
 C:\Users\Shansonye\Desktop\Practice\RepairAgency\src\main\java\com\shans\kaluhin\DAO\DBConnection.java
 C:\Users\Shansonye\Desktop\Practice\RepairAgency\src\main\java\com\shans\kaluhin\filter\LocaleFilter.java
 C:\Users\Shansonye\Desktop\Practice\RepairAgency\src\main\java\com\shans\kaluhin\controller\orders\PaymentServlet.java
-C:\Users\Shansonye\Desktop\Practice\RepairAgency\src\main\java\com\shans\kaluhin\tags\TransactionTag.java
+C:\Users\Shansonye\Desktop\Practice\RepairAgency\src\main\java\com\shans\kaluhin\controller\orders\CommentsServlet.java
 C:\Users\Shansonye\Desktop\Practice\RepairAgency\src\main\java\com\shans\kaluhin\service\OrderService.java
-C:\Users\Shansonye\Desktop\Practice\RepairAgency\src\main\java\com\shans\kaluhin\DAO\Dao.java
+C:\Users\Shansonye\Desktop\Practice\RepairAgency\src\main\java\com\shans\kaluhin\DAO\CommentDao.java
 C:\Users\Shansonye\Desktop\Practice\RepairAgency\src\main\java\com\shans\kaluhin\controller\MasterServlet.java
 C:\Users\Shansonye\Desktop\Practice\RepairAgency\src\main\java\com\shans\kaluhin\ProjectProperties.java
 C:\Users\Shansonye\Desktop\Practice\RepairAgency\src\main\java\com\shans\kaluhin\entity\Billing.java
@@ -28,4 +29,7 @@ C:\Users\Shansonye\Desktop\Practice\RepairAgency\src\main\java\com\shans\kaluhin
 C:\Users\Shansonye\Desktop\Practice\RepairAgency\src\main\java\com\shans\kaluhin\MainServlet.java
 C:\Users\Shansonye\Desktop\Practice\RepairAgency\src\main\java\com\shans\kaluhin\controller\ManagerServlet.java
 C:\Users\Shansonye\Desktop\Practice\RepairAgency\src\main\java\com\shans\kaluhin\entity\enums\Locales.java
+C:\Users\Shansonye\Desktop\Practice\RepairAgency\src\main\java\com\shans\kaluhin\tags\RateTag.java
 C:\Users\Shansonye\Desktop\Practice\RepairAgency\src\main\java\com\shans\kaluhin\controller\authorization\LogoutServlet.java
+C:\Users\Shansonye\Desktop\Practice\RepairAgency\src\main\java\com\shans\kaluhin\DAO\interfaces\Dao.java
+C:\Users\Shansonye\Desktop\Practice\RepairAgency\src\main\java\com\shans\kaluhin\entity\Comment.java

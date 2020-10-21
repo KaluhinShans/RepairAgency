@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://shans.su" prefix="shans"%>
 <%@ page isELIgnored="false" %>
 
 <fmt:setLocale value="${sessionScope.lang}"/>
@@ -14,11 +15,13 @@
 <body>
 <jsp:include page="./includes/navbar.jsp"/>
 <div class="container mt-5">
-    <jsp:include page="./includes/pagination.jsp"/>
+    <h2> <fmt:message key="master"/></h2>
+    <br>
+
     <div class="form-row">
         <div class="form-group col-md-6">
             <form method="get" action="/master" class="form-inline">
-                <select required name="searchByStatus" class="form-control ml-2">
+                <select required name="searchByStatus" class="form-control">
                     <option value="ALL"><fmt:message key="ALL"/></option>
                     <c:choose>
                         <c:when test="${param['status'] != null}">
@@ -131,7 +134,12 @@
                                 </div>
                             </div>
                         </div>
-
+                        </c:if>
+                        <c:if test="${order.commentId > 0 }">
+                            <c:set var="comment" value="${order.comment}"/>
+                        <h6 class="card-subtitle mb-2">Rate: </h6>
+                        <shans:rateTag rate="${comment.rate}"> </shans:rateTag>
+                        <label>Comment: ${comment.description}</label>
                         </c:if>
                 </div>
             </div>

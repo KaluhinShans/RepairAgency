@@ -1,15 +1,12 @@
 package com.shans.kaluhin.tags;
 
-import com.shans.kaluhin.entity.Billing;
-
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
-import java.util.List;
 
-public class TransactionTag extends TagSupport {
-    private List<Billing> billings;
+public class RateTag extends TagSupport {
+    private int rate;
     private int counter;
 
     @Override
@@ -18,27 +15,29 @@ public class TransactionTag extends TagSupport {
         counter = 0;
 
         try {
-            out.print("<button type=\"button\" class=\"list-group-item list-group-item-action active\">\n" +
-                    "                    <fmt:message key=\"balance.transactions\"/>\n" +
-                    "                </button>");
+            out.print("<div id=\"stars\">");
         } catch (IOException exception) {
             throw new JspException(exception);
         }
 
-        return SKIP_BODY;
+        return EVAL_BODY_INCLUDE;
     }
 
     @Override
     public int doAfterBody() throws JspException {
         JspWriter out = pageContext.getOut();
-
         try {
-            out.print(String.format("<tr><td colspan='3'>Row number #%d</td></tr>", counter++));
+            if(counter < rate) {
+                out.print("<label class=\"fa fa-star\"></label>");
+            }else if(counter <= 5){
+                out.print("<label class=\"fa fa-star-o\"></label>");
+            }
+            counter++;
         } catch (IOException e) {
             throw new JspException(e);
         }
 
-        if (counter > billings.size()) {
+        if (counter >= 5) {
             return SKIP_BODY;
         } else {
             return EVAL_BODY_AGAIN;
@@ -50,7 +49,7 @@ public class TransactionTag extends TagSupport {
         JspWriter out = pageContext.getOut();
 
         try {
-            out.print("</tbody></table>");
+            out.print("</div>");
         } catch (IOException e) {
             throw new JspException(e);
         }
@@ -58,11 +57,11 @@ public class TransactionTag extends TagSupport {
         return EVAL_PAGE;
     }
 
-    public List<Billing> getBillings() {
-        return billings;
+    public int getRate() {
+        return rate;
     }
 
-    public void setBillings(List<Billing> billings) {
-        this.billings = billings;
+    public void setRate(int rate) {
+        this.rate = rate;
     }
 }

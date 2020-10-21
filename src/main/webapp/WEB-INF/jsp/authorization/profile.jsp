@@ -2,7 +2,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://shans.su" prefix="shans"%>
 <%@ page isELIgnored="false" %>
 
 <%User user = (User) request.getSession(false).getAttribute("user");%>
@@ -58,9 +57,10 @@
                             <%}%>
                         </h5>
                         <h6>
-                            Customer
+                            <a href="/comments"
+                               class="btn btn-outline-secondary btn-sm">Comments </a>
                         </h6>
-                        <p class="proile-rating">RANKINGS : <span>8/10</span></p>
+
                         <ul class="nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item" role="presentation">
                                 <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"

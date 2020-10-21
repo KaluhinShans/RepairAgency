@@ -54,6 +54,10 @@
         <servlet-class>com.shans.kaluhin.controller.orders.PaymentServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>CommentsServlet</servlet-name>
+        <servlet-class>com.shans.kaluhin.controller.orders.CommentsServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>default</servlet-name>
     </servlet>
 
@@ -104,6 +108,10 @@
     <servlet-mapping>
         <servlet-name>PaymentServlet</servlet-name>
         <url-pattern>/payment/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CommentsServlet</servlet-name>
+        <url-pattern>/comments/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>default</servlet-name>

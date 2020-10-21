@@ -1,5 +1,6 @@
 package com.shans.kaluhin.controller.orders;
 
+import com.shans.kaluhin.entity.Comment;
 import com.shans.kaluhin.entity.Order;
 import com.shans.kaluhin.entity.User;
 import com.shans.kaluhin.entity.enums.OrderStatus;
@@ -33,8 +34,26 @@ public class OrdersServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        int orderId = Integer.parseInt(req.getParameter("orderId"));
+        int masterId = Integer.parseInt(req.getParameter("masterId"));
+        int userId = Integer.parseInt(req.getParameter("userId"));
+        int rate = req.getParameter("rate") == null ? 0 : Integer.parseInt(req.getParameter("rate"));
+        String description = req.getParameter("description");
 
+        Comment comment = new Comment();
+        comment.setMasterId(masterId);
+        comment.setUserId(userId);
+        comment.setRate(rate);
+        comment.setDescription(description);
+
+        OrderService orderService = new OrderService();
+        if (orderService.rateOrder(orderId, comment)) {
+            resp.sendRedirect("/orders");
+        }else{
+            req.setAttribute("error", orderService.error);
+            doGet(req, resp);
+        }
     }
 
     private void pagination(HttpServletRequest req, int id) {

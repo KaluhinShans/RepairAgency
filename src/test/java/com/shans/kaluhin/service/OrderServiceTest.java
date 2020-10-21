@@ -1,7 +1,9 @@
 package com.shans.kaluhin.service;
 
+import com.shans.kaluhin.DAO.CommentDao;
 import com.shans.kaluhin.DAO.OrderDao;
 import com.shans.kaluhin.DAO.UserDao;
+import com.shans.kaluhin.entity.Comment;
 import com.shans.kaluhin.entity.Order;
 import com.shans.kaluhin.entity.User;
 import com.shans.kaluhin.entity.enums.OrderStatus;
@@ -26,6 +28,9 @@ public class OrderServiceTest {
 
     @Mock
     private UserDao userDao;
+
+    @Mock
+    private CommentDao commentDao;
 
     @Mock
     private MailSenderService mailService;
@@ -142,6 +147,34 @@ public class OrderServiceTest {
     public void testSaveManagerAnswer_lowPrice(){
         assertFalse(service.saveManagerAnswer(0, 0, 0));
         assertEquals(service.error, "priceLowError");
+    }
+
+    @Test
+    public void testRateOrder(){
+        Comment comment = new Comment();
+        comment.setRate(3);
+        comment.setDescription("DescriptionLongLong ");
+        assertTrue(service.rateOrder(0, comment));
+        assertNull(service.error);
+    }
+
+    @Test
+    public void testRateOrder_lowRate(){
+        Comment comment = new Comment();
+        comment.setRate(0);
+        comment.setDescription("DescriptionLongLong ");
+        assertFalse(service.rateOrder(0, comment));
+        assertEquals(service.error, "nullRateError");
+
+    }
+
+    @Test
+    public void testRateOrder_shortDescription(){
+        Comment comment = new Comment();
+        comment.setRate(5);
+        comment.setDescription("DescriptionShort");
+        assertFalse(service.rateOrder(0, comment));
+        assertEquals(service.error, "descriptionShortError");
     }
 
 }

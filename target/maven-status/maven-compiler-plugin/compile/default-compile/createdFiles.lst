@@ -1,4 +1,5 @@
 com\shans\kaluhin\controller\authorization\LoginServlet.class
+com\shans\kaluhin\DAO\interfaces\Dao.class
 com\shans\kaluhin\service\OrderService.class
 com\shans\kaluhin\controller\orders\PaymentServlet.class
 com\shans\kaluhin\controller\authorization\LogoutServlet.class
@@ -14,11 +15,14 @@ com\shans\kaluhin\controller\ProfileServlet.class
 com\shans\kaluhin\service\BillingService.class
 com\shans\kaluhin\service\UserService.class
 com\shans\kaluhin\controller\MasterServlet.class
+com\shans\kaluhin\DAO\CommentDao.class
+com\shans\kaluhin\DAO\interfaces\ElasticDao.class
 com\shans\kaluhin\DAO\OrderDao.class
 com\shans\kaluhin\entity\enums\OrderStatus.class
 com\shans\kaluhin\entity\enums\Role.class
 com\shans\kaluhin\entity\Order.class
 com\shans\kaluhin\controller\orders\OrdersServlet.class
+com\shans\kaluhin\entity\Comment.class
 com\shans\kaluhin\ProjectProperties.class
 com\shans\kaluhin\DAO\UserDao.class
 com\shans\kaluhin\service\MailSenderService$1.class
@@ -26,6 +30,6 @@ com\shans\kaluhin\entity\User.class
 com\shans\kaluhin\filter\SecurityFilter.class
 com\shans\kaluhin\controller\AdminServlet.class
 com\shans\kaluhin\controller\authorization\RegisterServlet.class
-com\shans\kaluhin\DAO\Dao.class
 com\shans\kaluhin\controller\authorization\ActivationEmailServlet.class
 com\shans\kaluhin\filter\LocaleFilter.class
+com\shans\kaluhin\tags\RateTag.class

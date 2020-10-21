@@ -23,7 +23,6 @@ public class ProfileServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
         String uri = req.getRequestURI();
         if (uri.equals("/profile/edit")) {
             RequestDispatcher view = req.getRequestDispatcher("/WEB-INF/jsp/authorization/profileEdit.jsp");

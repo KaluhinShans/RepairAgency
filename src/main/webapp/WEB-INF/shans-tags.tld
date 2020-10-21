@@ -10,12 +10,14 @@
     <uri>http://shans.su</uri>
 
     <tag>
-        <name>transactionTag</name>
-        <tag-class>com.shans.kaluhin.tags.TransactionTag</tag-class>
+        <name>rateTag</name>
+        <tag-class>com.shans.kaluhin.tags.RateTag</tag-class>
+        <body-content>scriptless</body-content>
 
         <attribute>
-            <name>billings</name>
+            <name>rate</name>
             <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
 </taglib>

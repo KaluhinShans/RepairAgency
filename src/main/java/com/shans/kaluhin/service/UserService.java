@@ -111,9 +111,6 @@ public class UserService {
     }
 
     public int getNumberOfRows() {
-        if (userDao.totalRows == 0) {
-            return 1;
-        }
         return userDao.totalRows;
     }
 

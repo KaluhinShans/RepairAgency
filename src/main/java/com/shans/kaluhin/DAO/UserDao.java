@@ -1,5 +1,6 @@
 package com.shans.kaluhin.DAO;
 
+import com.shans.kaluhin.DAO.interfaces.ElasticDao;
 import com.shans.kaluhin.entity.User;
 import com.shans.kaluhin.entity.enums.Locales;
 import com.shans.kaluhin.entity.enums.Role;
@@ -8,7 +9,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDao implements Dao<User> {
+public class UserDao implements ElasticDao<User> {
     public int totalRows;
 
     @Override
@@ -205,16 +206,18 @@ public class UserDao implements Dao<User> {
 
         return user;
     }
+
+    @Override
+    public User findById(int userId) {
+        return findBy("id", userId);
+    }
+
     public void setPassword(int id, String password){
         setVariable("password", id, password);
     }
 
     public void setBalance(int id, int balance){
         setVariable("balance", id, balance);
-    }
-
-    public User findById(int userId) {
-        return findBy("id", userId);
     }
 
     public User findByActivationCode(String code) {
@@ -236,9 +239,6 @@ public class UserDao implements Dao<User> {
     public void setPhoto(User user) {
         setVariable("photo", user.getId(), user.getPhoto());
     }
-
-
-
 
     public List<User> findByRole(Role role) {
         String selectUsers = "Select * from users_roles where usr_role = ?";

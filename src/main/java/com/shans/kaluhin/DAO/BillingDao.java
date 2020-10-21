@@ -1,12 +1,13 @@
 package com.shans.kaluhin.DAO;
 
+import com.shans.kaluhin.DAO.interfaces.ElasticDao;
 import com.shans.kaluhin.entity.Billing;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BillingDao implements Dao<Billing> {
+public class BillingDao implements ElasticDao<Billing> {
     public int totalRows;
 
     @Override
@@ -165,6 +166,7 @@ public class BillingDao implements Dao<Billing> {
         return billing;
     }
 
+    @Override
     public Billing findById(int id) {
         return findBy("id", id);
     }

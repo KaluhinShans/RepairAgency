@@ -1,14 +1,10 @@
-package com.shans.kaluhin.DAO;
+package com.shans.kaluhin.DAO.interfaces;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import com.shans.kaluhin.DAO.interfaces.Dao;
+
 import java.util.List;
 
-public interface Dao<T> {
-
-    boolean insert(T t);
-
-    List<T> findAll(int start, int total);
+public interface ElasticDao<T> extends Dao<T> {
 
     T findBy(String by, int value);
 
@@ -22,5 +18,4 @@ public interface Dao<T> {
 
     void setVariable(String variable, int id, int value);
 
-    T buildObjectFromResultSet(ResultSet resultSet) throws SQLException;
 }
