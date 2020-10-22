@@ -57,4 +57,4 @@
 Настроить параметры подключения maven к серверу Apache Tomcat pom.xml: project/profiles/profile:prod/build/plugins/plugin:tomcat7-maven-plugin;
 Выполнить из каталога проекта развертывание приложения командой mvn -Pprod tomcat7:redeploy.
 
-###5.Запуск: перейти по полученной ссылке вида http://localhost:8080.
+### 5.Запуск: перейти по полученной ссылке вида http://localhost:8080.
