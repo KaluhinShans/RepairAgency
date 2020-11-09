@@ -1,5 +1,6 @@
 package com.shans.kaluhin;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
@@ -15,22 +16,23 @@ public class Main {
 
     public static void runProgram() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Sort by: "+ csvWorker.getSort().val);
+        System.out.println("Sort by: " + csvWorker.getSort().val);
         System.out.println("Write command: ");
         String command = scanner.nextLine();
         switch (command) {
             case "start":
+                fileWorker.setProjectPath("C:\\Users\\Shansonye\\Desktop\\Practice\\RepairAgency");
+                startRead();
 
-                    fileWorker.startCount();
-
+                scanner.close();
                 break;
             case "read":
                 System.out.println("Please write you project path");
                 String projectPath = scanner.nextLine();
                 fileWorker.setProjectPath(projectPath);
+                startRead();
 
-                    fileWorker.startCount();
-
+                scanner.close();
                 break;
             case "sort":
                 setSort();
@@ -40,9 +42,19 @@ public class Main {
                 runProgram();
                 break;
         }
+    }
+
+    public static void startRead(){
+        try {
+            fileWorker.startCount();
+        } catch (IOException exception) {
+            System.err.println("Invalid path");
+            runProgram();
+            return;
+        }
+
         csvWorker.writeWords(fileWorker.getKeyWords());
-        System.out.println( "\u001B[32m" + "Success!" + "\u001B[0m");
-        scanner.close();
+        System.out.println("\u001B[32m" + "Success!" + "\u001B[0m");
     }
 
     public static void setSort() {
@@ -57,22 +69,18 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         switch (scanner.nextLine()) {
             case "1":
-                System.out.println("sort set (A-Z)");
                 csvWorker.setSort(Sort.AZ);
                 runProgram();
                 break;
             case "2":
-                System.out.println("sort set (Z-A)");
                 csvWorker.setSort(Sort.ZA);
                 runProgram();
                 break;
             case "3":
-                System.out.println("sort set value descending");
                 csvWorker.setSort(Sort.DSC);
                 runProgram();
                 break;
             case "4":
-                System.out.println("sort set value ascending");
                 csvWorker.setSort(Sort.ASC);
                 runProgram();
                 break;
