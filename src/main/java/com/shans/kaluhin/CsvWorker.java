@@ -13,53 +13,49 @@ import java.util.Map;
 public class CsvWorker {
     private Path myPath = Paths.get("src/main/resources/keyWords.csv");
     private Sort sort = Sort.AZ;
+    private CSVWriter csvWriter;
 
     public void writeWords(KeyWords keyWords) {
         Map<String, Integer> words = keyWords.getWords();
         try (
                 Writer writer = Files.newBufferedWriter(myPath);
-
-                CSVWriter csvWriter = new CSVWriter(writer,
-                        '=',
-                        CSVWriter.NO_QUOTE_CHARACTER,
-                        CSVWriter.DEFAULT_ESCAPE_CHARACTER,
-                        CSVWriter.DEFAULT_LINE_END);
         ) {
+            csvWriter = new CSVWriter(writer,
+                    CSVWriter.DEFAULT_SEPARATOR,
+                    CSVWriter.NO_QUOTE_CHARACTER,
+                    CSVWriter.DEFAULT_ESCAPE_CHARACTER,
+                    CSVWriter.DEFAULT_LINE_END);
 
             switch (sort) {
                 case AZ:
                     words.entrySet().stream()
                             .sorted(Map.Entry.comparingByKey())
-                            .forEach(entry -> {
-                                csvWriter.writeNext(new String[]{entry.getKey() + " ", " " + entry.getValue()});
-                            });
+                            .forEach(this::writeKeyAndValue);
                     break;
                 case ZA:
                     words.entrySet().stream()
                             .sorted(Collections.reverseOrder(Map.Entry.comparingByKey()))
-                            .forEach(entry -> {
-                                csvWriter.writeNext(new String[]{entry.getKey() + " ", " " + entry.getValue()});
-                            });
+                            .forEach(this::writeKeyAndValue);
                     break;
                 case ASC:
                     words.entrySet().stream()
                             .sorted(Map.Entry.comparingByValue())
-                            .forEach(entry -> {
-                                csvWriter.writeNext(new String[]{entry.getKey() + " ", " " + entry.getValue()});
-                            });
+                            .forEach(this::writeKeyAndValue);
                     break;
                 case DSC:
                     words.entrySet().stream()
                             .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-                            .forEach(entry -> {
-                                csvWriter.writeNext(new String[]{entry.getKey() + " ", " " + entry.getValue()});
-                            });
+                            .forEach(this::writeKeyAndValue);
                     break;
             }
 
         } catch (IOException exception) {
             exception.printStackTrace();
         }
+    }
+
+    private void writeKeyAndValue(Map.Entry<String, Integer> entry){
+        csvWriter.writeNext(new String[]{entry.getKey(), String.valueOf(entry.getValue())});
     }
 
     public void setSort(Sort sort) {

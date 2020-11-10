@@ -1,7 +1,5 @@
 package com.shans.kaluhin;
 
-import org.apache.commons.collections.MapUtils;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,28 +11,23 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class FileWorker {
-    private String projectPath = "C:\\Users\\Shansonye\\Desktop\\Practice\\RepairAgency";
+    private String projectPath;
     private final KeyWords keyWords = new KeyWords();
 
-    public void startCount() {
+    public void startCount() throws IOException {
         List<String> files = readDirectoryFiles();
-        if (files == null){
-            System.err.println("Invalid path");
-            Main.runProgram();
-            return;
-        }
         for (String file: files) {
             readWords(Util.getInput(file));
         }
     }
 
-    private List<String> readDirectoryFiles() {
+    private List<String> readDirectoryFiles() throws IOException {
         try (Stream<Path> walk = Files.walk(Paths.get(projectPath + "\\src"))) {
             List<String> result = walk.map(Path::toString)
                     .filter(f -> f.endsWith(".java")).collect(Collectors.toList());
             return result;
         } catch (IOException e) {
-            return null;
+            throw new IOException();
         }
     }
 

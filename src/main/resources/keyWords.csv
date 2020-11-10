@@ -1,53 +1,50 @@
-abstract = 0
-assert = 0
-boolean = 33
-break = 0
-byte = 2
-case = 0
-catch = 44
-char = 0
-class = 56
-const = 0
-continue = 0
-default = 0
-do = 1
-double = 0
-else = 24
-enum = 3
-extends = 16
-false = 33
-final = 7
-finally = 0
-float = 0
-for = 11
-goto = 0
-if = 103
-implements = 6
-import = 309
-instaceof = 0
-int = 242
-interface = 2
-long = 0
-native = 0
-new = 122
-null = 80
-package = 40
-private = 88
-protected = 24
-public = 294
-return = 224
-short = 0
-static = 22
-strictfp = 0
-super = 0
-switch = 0
-synchronized = 0
-this = 43
-throw = 6
-throws = 33
-transient = 0
-true = 23
-try = 43
-void = 148
-volatile = 0
-while = 20
+public,290
+import,288
+int,241
+return,223
+void,146
+new,111
+if,103
+private,85
+class,53
+this,43
+catch,42
+try,42
+package,38
+boolean,33
+throws,32
+else,24
+protected,23
+static,22
+while,19
+extends,15
+for,9
+final,7
+implements,6
+throw,5
+enum,3
+interface,2
+do,1
+synchronized,0
+float,0
+continue,0
+case,0
+instaceof,0
+byte,0
+double,0
+finally,0
+strictfp,0
+transient,0
+const,0
+long,0
+switch,0
+default,0
+goto,0
+native,0
+assert,0
+break,0
+volatile,0
+abstract,0
+super,0
+char,0
+short,0

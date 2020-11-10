@@ -55,7 +55,6 @@ public class KeyWords {
         words.put("else", 0);
         words.put("enum", 0);
         words.put("extends", 0);
-        words.put("false", 0);
         words.put("final", 0);
         words.put("finally", 0);
         words.put("float", 0);
@@ -70,7 +69,6 @@ public class KeyWords {
         words.put("long", 0);
         words.put("native", 0);
         words.put("new", 0);
-        words.put("null", 0);
         words.put("package", 0);
         words.put("private", 0);
         words.put("protected", 0);
@@ -86,7 +84,6 @@ public class KeyWords {
         words.put("throw", 0);
         words.put("throws", 0);
         words.put("transient", 0);
-        words.put("true", 0);
         words.put("try", 0);
         words.put("void", 0);
         words.put("volatile", 0);
